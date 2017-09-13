@@ -1,0 +1,477 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<title>Functional Programming in Scala</title>
+<meta name="author" content="(Bill Carlson)"/>
+<style type="text/css">
+.underline { text-decoration: underline; }
+</style>
+<link rel="stylesheet" href="http://cdn.jsdelivr.net/reveal.js/3.0.0/css/reveal.css"/>
+
+<link rel="stylesheet" href="http://cdn.jsdelivr.net/reveal.js/3.0.0/css/theme/sky.css" id="theme"/>
+
+<link rel="stylesheet" href="http://cdn.jsdelivr.net/reveal.js/3.0.0/lib/css/zenburn.css"/>
+<!-- If the query includes 'print-pdf', include the PDF print sheet -->
+<script>
+    if( window.location.search.match( /print-pdf/gi ) ) {
+        var link = document.createElement( 'link' );
+        link.rel = 'stylesheet';
+        link.type = 'text/css';
+        link.href = 'http://cdn.jsdelivr.net/reveal.js/3.0.0/css/print/pdf.css';
+        document.getElementsByTagName( 'head' )[0].appendChild( link );
+    }
+</script>
+</head>
+<body>
+<div class="reveal">
+<div class="slides">
+
+<section>
+<section id="slide-org144d2e8">
+<h2 id="org144d2e8">Functional Programming from First Principles</h2>
+<p>
+(in Scala!)
+</p>
+
+</section>
+</section>
+<section>
+<section id="slide-org3488b62">
+<h2 id="org3488b62">Who am I?</h2>
+<ul>
+<li>Bill Carlson</li>
+<li>Innovation Developer at Cotiviti Labs</li>
+<li>I get paid to write purely functional programs!</li>
+
+</ul>
+
+</section>
+</section>
+<section>
+<section id="slide-org16b1ac2">
+<h2 id="org16b1ac2">What is Functional Programming?</h2>
+<p class="fragment">
+Programming with Functions
+</p>
+
+</section>
+<section id="slide-org9938b69">
+<h3 id="org9938b69">What is a Function?</h3>
+<p class="fragment">
+A function <code>f: A =&gt; B</code> maps any value from one set to <b>exactly one</b> value in another set.
+</p>
+
+<p class="fragment">
+<i>And nothing else</i>
+</p>
+
+</section>
+<section id="slide-org50f98b7">
+<h3 id="org50f98b7">What does that mean?</h3>
+<ul class="fragment">
+<li><b>Totality</b>: A function will return a single value for all values of <code>A</code>.</li>
+<li><b>Determinism</b>: Every time you call a function with the same arguments, you will <i>always</i> get the same result.</li>
+<li><b>Purity</b>: The result of the function is the <i>only</i> effect.</li>
+
+</ul>
+
+</section>
+<section id="slide-org9e37219">
+<h3 id="org9e37219">Referential Tranparency</h3>
+<p>
+You can replace all occurrences of a function call with the result of that call without changing the program. 
+</p>
+
+</section>
+<section id="slide-orgd5ff6a3">
+<h4 id="orgd5ff6a3">Example</h4>
+<div class="org-src-container">
+
+<pre><code class="scala" >val string = "some text"
+val s1 = string.reverse
+val s2 = string.reverse
+val s3 = s1 + s2
+</code></pre>
+</div>
+
+<div class="org-src-container">
+
+<pre class="fragment"><code class="scala" >val sb = new StringBuilder("some text")
+val s1 = sb.reverse
+val s2 = sb.reverse
+val s3 = s1 append s2
+</code></pre>
+</div>
+
+</section>
+<section id="slide-org7255aad">
+<h3 id="org7255aad">What about&#x2026;</h3>
+<ul>
+<li>Console?</li>
+<li>File access?</li>
+<li>Network?</li>
+<li>Exceptions?</li>
+
+</ul>
+
+<aside class="notes">
+<p>
+We'll get to that&#x2026;
+</p>
+
+</aside>
+
+</section>
+</section>
+<section>
+<section id="slide-org3cddd0a">
+<h2 id="org3cddd0a">Types</h2>
+</section>
+<section >
+
+<p>
+<code>def foo(i: Int): Int</code>
+</p>
+
+<p class="fragment">
+<code>def inc(i: Int) = i + 1</code>
+</p>
+
+<p class="fragment">
+<code>def timesTwo(i: Int) = i * 2</code>
+</p>
+
+<p class="fragment">
+<code>def abs(i: Int) = if (i &lt; 0) -i else i</code>
+</p>
+
+<p class="fragment">
+???
+</p>
+
+</section>
+<section >
+
+<p>
+<code>def bar[A](i: A): A</code>
+</p>
+
+<p>
+(assuming purity)
+</p>
+
+<p class="fragment">
+<code>def identity[A](i: A): A = i</code>
+</p>
+
+</section>
+<section >
+
+<p>
+[T]he purpose of abstracting is not to be vague, but to create a new semantic level in which one can be absolutely precise. 
+</p>
+
+<p>
+&#x2013; Edsger W. Dijkstra, "The Humble Programmer"
+</p>
+
+</section>
+</section>
+<section>
+<section id="slide-orge0c155d">
+<h2 id="orge0c155d">Higher-Order Functions</h2>
+</section>
+<section >
+
+<p>
+Oh, boy&#x2026; live code&#x2026; 
+</p>
+
+<aside class="notes">
+<p>
+val isEven: Int <code>&gt; Boolean = i =&gt; i % 2 =</code> 0
+def divisibleBy(k: Int): Int <code>&gt; Boolean = i -&gt; i % k =</code> 0
+val isEven = divisibleBy(2)
+</p>
+
+<p>
+type Predicate[A] = A =&gt; Boolean
+val not[A](p: Predicate[A]): Predicate[A] = a =&gt; !p(a)
+val and[A](p1: Predicate[A], p2: Predicate[A]): Predicate[A] = a =&gt; p1(a) &amp;&amp; p2(a)
+val or[A](p1: Predicate[A], p2: Predicate[A]): Predicate[A] = a =&gt; p1(a) || p2(a)
+</p>
+
+<p>
+val lift[A](f: (Boolean, Boolean) =&gt; Boolean): 
+  (Predicate[A], Predicate[A]) =&gt; Predicate[A] = 
+    (p1, p2) =&gt; a =&gt; f(p1(a), p2(a))
+</p>
+
+<p>
+val and[A] = lift(_ &amp;&amp; <span class="underline">)
+val or[A} = lift(</span> || _)
+</p>
+
+</aside>
+
+</section>
+</section>
+<section>
+<section id="slide-org43b2bcc">
+<h2 id="org43b2bcc">Data Structures</h2>
+<div class="outline-text-2" id="text-org43b2bcc">
+</div></section>
+<section id="slide-orgea837be">
+<h3 id="orgea837be">List</h3>
+<p>
+Empty List: <code>Nil</code>
+</p>
+
+<p>
+Non-empty list (cons): <code>A :: List[A]</code>
+</p>
+
+</section>
+<section >
+
+<p>
+To build large lists, just add to a smaller list:
+</p>
+
+<div class="org-src-container">
+
+<pre><code class="scala" >val list1 = 2 :: 3 :: 4 :: 5 :: Nil  // List(2, 3, 4, 5)
+
+val list2 = 1 :: list1
+</code></pre>
+</div>
+
+</section>
+<section id="slide-org2ca841c">
+<h4 id="org2ca841c">It's time for more code!</h4>
+<aside class="notes">
+<p>
+def sum(ints: List[Int]): Int =
+  ints match {
+    case Nil =&gt; 0
+    case x :: xs =&gt; x + sum1(xs)
+  }
+</p>
+
+<p>
+def sum2(ints: List[Int]): Int = {
+  @annotation.tailrec
+  def loop(acc: Int, remaining: List[Int]): Int = 
+    remaining match {
+      case Nil =&gt; acc
+      case x :: xs =&gt; loop(acc + x, xs)
+    }
+  loop(0, ints)
+}
+</p>
+
+<p>
+What about product?  mkString? 
+</p>
+
+<p>
+Generate foldLeft (and foldRight)
+</p>
+
+<p>
+Show how to implement the above using foldLeft
+</p>
+
+<p>
+def sum(xs: List[Int]): Int = foldLeft(xs, 0)(_ + <span class="underline">)
+def product(xs: List[Int]): Int = foldLeft(xs, 1)(</span> * <span class="underline">)
+def mkString(xs: List[Int]): String = foldLeft(xs, "")(</span> + _.toString)
+def reverse[A](xs: List[A]): List[A] = foldLeft(xs, List.empty[A]) { (acc, i) =&gt; i :: acc }
+</p>
+
+<p>
+def map[A, B](xs: List[A])(f: A =&gt; B): List[B] = foldRight(xs, List.empty[B]) { (i, acc) =&gt; f(i) :: acc }
+def mapl[A, B](xs: List[A])(f: A =&gt; B): List[B] = reverse(foldLeft(xs, List.empty[B]) { (acc, i) =&gt; f(i) :: acc })
+</p>
+
+</aside>
+
+</section>
+<section id="slide-org0c56c39">
+<h3 id="org0c56c39">Option[A]</h3>
+<ul>
+<li><code>Some[A]</code></li>
+<li><code>None</code></li>
+
+</ul>
+
+<div class="org-src-container">
+
+<pre class="fragment"><code class="scala" >def fold[A](o: Option[A], z: B)(f: A =&gt; B): B = o match {
+  case Some(a) =&gt; f(a)
+  case None =&gt; z
+}
+</code></pre>
+</div>
+
+</section>
+<section id="slide-orga3d6856">
+<h3 id="orga3d6856">Either[E, A]</h3>
+<ul>
+<li><code>Left[E]</code></li>
+<li><code>Right[A]</code></li>
+
+</ul>
+
+<div class="org-src-container">
+
+<pre class="fragment"><code class="scala" >def fold[E, A](e: Either[E, A], z: E =&gt; B, f: A =&gt; B): B = e match {
+  case Left(e) =&gt; z(e)
+  case Right(a) =&gt; f(a)
+}
+</code></pre>
+</div>
+
+</section>
+</section>
+<section>
+<section id="slide-orgdde4018">
+<h2 id="orgdde4018">Interpreters</h2>
+<ul>
+<li>Your program <i>is</i> the data structure</li>
+<li>Your interpreter is the fold</li>
+<li><a href="https://www.gofpatterns.com/behavioral-design-patterns/behavioral-patterns/interpreter-pattern.php">GoF Interpreter Pattern</a></li>
+
+</ul>
+<p class="fragment">
+Can this be extended? 
+</p>
+
+</section>
+</section>
+<section>
+<section id="slide-org8f2be36">
+<h2 id="org8f2be36">Algebras</h2>
+<div class="outline-text-2" id="text-org8f2be36">
+</div></section>
+<section id="slide-org7e48766">
+<h3 id="org7e48766">What about&#x2026;</h3>
+<ul>
+<li>Console?</li>
+<li>File access?</li>
+<li>Network?</li>
+<li>Exceptions?</li>
+
+</ul>
+
+<aside class="notes">
+<p>
+Remember this slide? 
+</p>
+
+</aside>
+
+</section>
+<section id="slide-orgd6625cc">
+<h4 id="orgd6625cc">Console</h4>
+<div class="org-src-container">
+
+<pre><code class="scala" >sealed trait Console[A]
+case class Print(s: String) extends Console[Unit]
+case object Read extends Console[Option[String]]
+</code></pre>
+</div>
+
+</section>
+<section id="slide-orgaf15283">
+<h4 id="orgaf15283">File</h4>
+<div class="org-src-container">
+
+<pre><code class="scala" >sealed trait File[A]
+case class Open(p: Path) extends File[Unit]
+case class Write(data: Array[Byte]) extends File[Unit]
+case object Read extends File[Array[Byte]]
+case object Truncate extends File[Unit]
+</code></pre>
+</div>
+
+
+</section>
+<section id="slide-orgd9899c7">
+<h4 id="orgd9899c7">And so on&#x2026;</h4>
+<p>
+An <i>algebra</i> is an abstract set of operations
+</p>
+
+<p>
+Provides <i>laws</i> which must hold true
+</p>
+
+<p>
+Using algebras, combinators, and folds, we simplify (evaluate) the program to a single value.
+</p>
+
+<p class="fragment">
+&#x2026;maybe a good topic for next time? 
+</p>
+
+</section>
+</section>
+<section>
+<section id="slide-org55a846f">
+<h2 id="org55a846f">?</h2>
+
+</section>
+</section>
+<section>
+<section id="slide-org168f5e0">
+<h2 id="org168f5e0">Thank you!</h2>
+<p>
+Bill Carlson
+</p>
+
+<p>
+<a href="mailto:bill@coacoas.net">bill@coacoas.net</a>
+</p>
+
+<p>
+<a href="https://twitter.com/coacoas">@coacoas</a>
+</p>
+</section>
+</section>
+</div>
+</div>
+<script src="http://cdn.jsdelivr.net/reveal.js/3.0.0/lib/js/head.min.js"></script>
+<script src="http://cdn.jsdelivr.net/reveal.js/3.0.0/js/reveal.js"></script>
+
+<script>
+// Full list of configuration options available here:
+// https://github.com/hakimel/reveal.js#configuration
+Reveal.initialize({
+
+controls: true,
+progress: true,
+history: false,
+center: true,
+slideNumber: 'c',
+rollingLinks: false,
+keyboard: true,
+overview: true,
+
+theme: Reveal.getQueryHash().theme, // available themes are in /css/theme
+transition: Reveal.getQueryHash().transition || 'slide', // default/cube/page/concave/zoom/linear/fade/none
+transitionSpeed: 'default',
+multiplex: {
+    secret: '', // null if client
+    id: '', // id, obtained from socket.io server
+    url: '' // Location of socket.io server
+},
+
+// Optional libraries used to extend on reveal.js
+dependencies: [
+ { src: 'http://cdn.jsdelivr.net/reveal.js/3.0.0/plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } }]
+});
+</script>
+</body>
+</html>

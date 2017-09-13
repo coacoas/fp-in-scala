@@ -1,0 +1,259 @@
+#+OPTIONS: num:nil toc:nil reveal_title_slide:nil
+#+REVEAL_ROOT: http://cdn.jsdelivr.net/reveal.js/3.0.0/
+#+REVEAL_TRANS: slide
+#+REVEAL_THEME: sky
+#+REVEAL_PLUGINS: (highlight)
+#+Title: Functional Programming in Scala
+#+Author: Bill Carlson
+#+Email: @coacoas
+
+* Functional Programming from First Principles
+(in Scala!)
+
+* Who am I? 
+  * Bill Carlson
+  * Innovation Developer at Cotiviti Labs
+  * I get paid to write purely functional programs!
+      
+* What is Functional Programming?
+
+#+ATTR_REVEAL: :frag t
+Programming with Functions
+
+** What is a Function?
+
+#+ATTR_REVEAL: :frag t
+A function ~f: A => B~ maps any value from one set to *exactly one* value in another set.
+
+#+ATTR_REVEAL: :frag t
+/And nothing else/
+
+** What does that mean? 
+
+#+ATTR_REVEAL: :frag t 
+ * *Totality*: A function will return a single value for all values of ~A~.
+ * *Determinism*: Every time you call a function with the same arguments, you will /always/ get the same result.
+ * *Purity*: The result of the function is the /only/ effect.
+
+** Referential Tranparency
+
+You can replace all occurrences of a function call with the result of that call without changing the program. 
+
+*** Example
+
+#+BEGIN_SRC scala
+val string = "some text"
+val s1 = string.reverse
+val s2 = string.reverse
+val s3 = s1 + s2
+#+END_SRC
+
+#+ATTR_REVEAL: :frag t
+#+BEGIN_SRC scala
+val sb = new StringBuilder("some text")
+val s1 = sb.reverse
+val s2 = sb.reverse
+val s3 = s1 append s2
+#+END_SRC
+
+** What about... 
+ * Console?
+ * File access?
+ * Network?
+ * Exceptions?
+
+#+BEGIN_NOTES
+We'll get to that...
+#+END_NOTES
+
+* Types
+
+#+REVEAL: split
+
+~def foo(i: Int): Int~
+
+#+ATTR_REVEAL: :frag t
+~def inc(i: Int) = i + 1~
+
+#+ATTR_REVEAL: :frag t
+~def timesTwo(i: Int) = i * 2~
+
+#+ATTR_REVEAL: :frag t
+~def abs(i: Int) = if (i < 0) -i else i~
+
+#+ATTR_REVEAL: :frag t
+???
+
+#+REVEAL: split
+
+~def bar[A](i: A): A~
+
+(assuming purity)
+
+#+ATTR_REVEAL: :frag t
+~def identity[A](i: A): A = i~
+
+#+REVEAL: split
+
+[T]he purpose of abstracting is not to be vague, but to create a new semantic level in which one can be absolutely precise. 
+
+-- Edsger W. Dijkstra, "The Humble Programmer"
+
+* Higher-Order Functions
+
+#+REVEAL: split
+
+Oh, boy... live code... 
+
+#+BEGIN_NOTES
+val isEven: Int => Boolean = i => i % 2 == 0
+def divisibleBy(k: Int): Int => Boolean = i -> i % k == 0
+val isEven = divisibleBy(2)
+
+type Predicate[A] = A => Boolean
+val not[A](p: Predicate[A]): Predicate[A] = a => !p(a)
+val and[A](p1: Predicate[A], p2: Predicate[A]): Predicate[A] = a => p1(a) && p2(a)
+val or[A](p1: Predicate[A], p2: Predicate[A]): Predicate[A] = a => p1(a) || p2(a)
+
+val lift[A](f: (Boolean, Boolean) => Boolean): 
+  (Predicate[A], Predicate[A]) => Predicate[A] = 
+    (p1, p2) => a => f(p1(a), p2(a))
+
+val and[A] = lift(_ && _)
+val or[A} = lift(_ || _)
+#+END_NOTES
+
+* Data Structures
+
+** List
+
+Empty List: ~Nil~
+
+Non-empty list (cons): ~A :: List[A]~
+
+#+REVEAL: split
+
+To build large lists, just add to a smaller list:
+
+#+BEGIN_SRC scala
+val list1 = 2 :: 3 :: 4 :: 5 :: Nil  // List(2, 3, 4, 5)
+
+val list2 = 1 :: list1
+#+END_SRC
+
+*** It's time for more code! 
+
+#+BEGIN_NOTES
+def sum(ints: List[Int]): Int =
+  ints match {
+    case Nil => 0
+    case x :: xs => x + sum1(xs)
+  }
+
+def sum2(ints: List[Int]): Int = {
+  @annotation.tailrec
+  def loop(acc: Int, remaining: List[Int]): Int = 
+    remaining match {
+      case Nil => acc
+      case x :: xs => loop(acc + x, xs)
+    }
+  loop(0, ints)
+}
+
+What about product?  mkString? 
+
+Generate foldLeft (and foldRight)
+
+Show how to implement the above using foldLeft
+
+def sum(xs: List[Int]): Int = foldLeft(xs, 0)(_ + _)
+def product(xs: List[Int]): Int = foldLeft(xs, 1)(_ * _)
+def mkString(xs: List[Int]): String = foldLeft(xs, "")(_ + _.toString)
+def reverse[A](xs: List[A]): List[A] = foldLeft(xs, List.empty[A]) { (acc, i) => i :: acc }
+
+def map[A, B](xs: List[A])(f: A => B): List[B] = foldRight(xs, List.empty[B]) { (i, acc) => f(i) :: acc }
+def mapl[A, B](xs: List[A])(f: A => B): List[B] = reverse(foldLeft(xs, List.empty[B]) { (acc, i) => f(i) :: acc })
+
+#+END_NOTES
+
+** Option[A]
+ * ~Some[A]~
+ * ~None~
+
+#+ATTR_REVEAL: :frag t
+#+BEGIN_SRC scala
+def fold[A](o: Option[A], z: B)(f: A => B): B = o match {
+  case Some(a) => f(a)
+  case None => z
+}
+#+END_SRC
+
+** Either[E, A]
+ * ~Left[E]~
+ * ~Right[A]~
+
+#+ATTR_REVEAL: :frag t
+#+BEGIN_SRC scala
+def fold[E, A](e: Either[E, A], z: E => B, f: A => B): B = e match {
+  case Left(e) => z(e)
+  case Right(a) => f(a)
+}
+#+END_SRC
+
+* Interpreters
+
+ * Your program /is/ the data structure
+ * Your interpreter is the fold
+ * [[https://www.gofpatterns.com/behavioral-design-patterns/behavioral-patterns/interpreter-pattern.php][GoF Interpreter Pattern]]
+#+ATTR_REVEAL: :frag t
+Can this be extended? 
+
+* Algebras
+
+** What about... 
+ * Console?
+ * File access?
+ * Network?
+ * Exceptions?
+
+#+BEGIN_NOTES
+Remember this slide? 
+#+END_NOTES
+
+*** Console
+#+BEGIN_SRC scala
+sealed trait Console[A]
+case class Print(s: String) extends Console[Unit]
+case object Read extends Console[Option[String]]
+#+END_SRC
+
+*** File
+#+BEGIN_SRC scala
+sealed trait File[A]
+case class Open(p: Path) extends File[Unit]
+case class Write(data: Array[Byte]) extends File[Unit]
+case object Read extends File[Array[Byte]]
+case object Truncate extends File[Unit]
+#+END_SRC
+
+
+*** And so on...
+
+An /algebra/ is an abstract set of operations
+
+Provides /laws/ which must hold true
+
+Using algebras, combinators, and folds, we simplify (evaluate) the program to a single value.
+
+#+ATTR_REVEAL: :frag t
+...maybe a good topic for next time? 
+
+* ? 
+
+* Thank you!
+
+Bill Carlson
+
+[[mailto:bill@coacoas.net][bill@coacoas.net]]
+
+[[https://twitter.com/coacoas][@coacoas]]

@@ -1,0 +1,10 @@
+.ensime
+.ensime_cache
+
+\#*\#
+*.bak
+*.iml
+
+project
+target
+

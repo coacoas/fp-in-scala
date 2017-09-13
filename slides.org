@@ -1,8 +1,7 @@
 #+OPTIONS: num:nil toc:nil reveal_title_slide:nil
-#+REVEAL_ROOT: https://cdn.jsdelivr.net/reveal.js/3.0.0/
 #+REVEAL_TRANS: slide
 #+REVEAL_THEME: sky
-#+REVEAL_PLUGINS: (highlight)
+#+REVEAL_PLUGINS: (highlight notes)
 #+Title: Functional Programming in Scala
 #+Author: Bill Carlson
 #+Email: @coacoas

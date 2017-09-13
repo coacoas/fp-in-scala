@@ -7,18 +7,18 @@
 <style type="text/css">
 .underline { text-decoration: underline; }
 </style>
-<link rel="stylesheet" href="http://cdn.jsdelivr.net/reveal.js/3.0.0/css/reveal.css"/>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/reveal.js/3.0.0/css/reveal.css"/>
 
-<link rel="stylesheet" href="http://cdn.jsdelivr.net/reveal.js/3.0.0/css/theme/sky.css" id="theme"/>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/reveal.js/3.0.0/css/theme/sky.css" id="theme"/>
 
-<link rel="stylesheet" href="http://cdn.jsdelivr.net/reveal.js/3.0.0/lib/css/zenburn.css"/>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/reveal.js/3.0.0/lib/css/zenburn.css"/>
 <!-- If the query includes 'print-pdf', include the PDF print sheet -->
 <script>
     if( window.location.search.match( /print-pdf/gi ) ) {
         var link = document.createElement( 'link' );
         link.rel = 'stylesheet';
         link.type = 'text/css';
-        link.href = 'http://cdn.jsdelivr.net/reveal.js/3.0.0/css/print/pdf.css';
+        link.href = 'https://cdn.jsdelivr.net/reveal.js/3.0.0/css/print/pdf.css';
         document.getElementsByTagName( 'head' )[0].appendChild( link );
     }
 </script>
@@ -28,8 +28,8 @@
 <div class="slides">
 
 <section>
-<section id="slide-org144d2e8">
-<h2 id="org144d2e8">Functional Programming from First Principles</h2>
+<section id="slide-orgeb86373">
+<h2 id="orgeb86373">Functional Programming from First Principles</h2>
 <p>
 (in Scala!)
 </p>
@@ -37,8 +37,8 @@
 </section>
 </section>
 <section>
-<section id="slide-org3488b62">
-<h2 id="org3488b62">Who am I?</h2>
+<section id="slide-orgf61bd9a">
+<h2 id="orgf61bd9a">Who am I?</h2>
 <ul>
 <li>Bill Carlson</li>
 <li>Innovation Developer at Cotiviti Labs</li>
@@ -49,15 +49,15 @@
 </section>
 </section>
 <section>
-<section id="slide-org16b1ac2">
-<h2 id="org16b1ac2">What is Functional Programming?</h2>
+<section id="slide-orgc3193c6">
+<h2 id="orgc3193c6">What is Functional Programming?</h2>
 <p class="fragment">
 Programming with Functions
 </p>
 
 </section>
-<section id="slide-org9938b69">
-<h3 id="org9938b69">What is a Function?</h3>
+<section id="slide-orgad3563f">
+<h3 id="orgad3563f">What is a Function?</h3>
 <p class="fragment">
 A function <code>f: A =&gt; B</code> maps any value from one set to <b>exactly one</b> value in another set.
 </p>
@@ -67,8 +67,8 @@ A function <code>f: A =&gt; B</code> maps any value from one set to <b>exactly o
 </p>
 
 </section>
-<section id="slide-org50f98b7">
-<h3 id="org50f98b7">What does that mean?</h3>
+<section id="slide-orgc419f7b">
+<h3 id="orgc419f7b">What does that mean?</h3>
 <ul class="fragment">
 <li><b>Totality</b>: A function will return a single value for all values of <code>A</code>.</li>
 <li><b>Determinism</b>: Every time you call a function with the same arguments, you will <i>always</i> get the same result.</li>
@@ -77,15 +77,15 @@ A function <code>f: A =&gt; B</code> maps any value from one set to <b>exactly o
 </ul>
 
 </section>
-<section id="slide-org9e37219">
-<h3 id="org9e37219">Referential Tranparency</h3>
+<section id="slide-org335b065">
+<h3 id="org335b065">Referential Tranparency</h3>
 <p>
 You can replace all occurrences of a function call with the result of that call without changing the program. 
 </p>
 
 </section>
-<section id="slide-orgd5ff6a3">
-<h4 id="orgd5ff6a3">Example</h4>
+<section id="slide-org223c69c">
+<h4 id="org223c69c">Example</h4>
 <div class="org-src-container">
 
 <pre><code class="scala" >val string = "some text"
@@ -105,8 +105,8 @@ val s3 = s1 append s2
 </div>
 
 </section>
-<section id="slide-org7255aad">
-<h3 id="org7255aad">What about&#x2026;</h3>
+<section id="slide-org320f4c6">
+<h3 id="org320f4c6">What about&#x2026;</h3>
 <ul>
 <li>Console?</li>
 <li>File access?</li>
@@ -125,8 +125,8 @@ We'll get to that&#x2026;
 </section>
 </section>
 <section>
-<section id="slide-org3cddd0a">
-<h2 id="org3cddd0a">Types</h2>
+<section id="slide-orgd769d42">
+<h2 id="orgd769d42">Types</h2>
 </section>
 <section >
 
@@ -179,8 +179,8 @@ We'll get to that&#x2026;
 </section>
 </section>
 <section>
-<section id="slide-orge0c155d">
-<h2 id="orge0c155d">Higher-Order Functions</h2>
+<section id="slide-orgf87c18f">
+<h2 id="orgf87c18f">Higher-Order Functions</h2>
 </section>
 <section >
 
@@ -218,12 +218,12 @@ val or[A} = lift(</span> || _)
 </section>
 </section>
 <section>
-<section id="slide-org43b2bcc">
-<h2 id="org43b2bcc">Data Structures</h2>
-<div class="outline-text-2" id="text-org43b2bcc">
+<section id="slide-orgb3869c7">
+<h2 id="orgb3869c7">Data Structures</h2>
+<div class="outline-text-2" id="text-orgb3869c7">
 </div></section>
-<section id="slide-orgea837be">
-<h3 id="orgea837be">List</h3>
+<section id="slide-orgae2dab5">
+<h3 id="orgae2dab5">List</h3>
 <p>
 Empty List: <code>Nil</code>
 </p>
@@ -248,8 +248,8 @@ val list2 = 1 :: list1
 </div>
 
 </section>
-<section id="slide-org2ca841c">
-<h4 id="org2ca841c">It's time for more code!</h4>
+<section id="slide-org99335a5">
+<h4 id="org99335a5">It's time for more code!</h4>
 <aside class="notes">
 <p>
 def sum(ints: List[Int]): Int =
@@ -298,8 +298,8 @@ def mapl[A, B](xs: List[A])(f: A =&gt; B): List[B] = reverse(foldLeft(xs, List.e
 </aside>
 
 </section>
-<section id="slide-org0c56c39">
-<h3 id="org0c56c39">Option[A]</h3>
+<section id="slide-orgb27fb25">
+<h3 id="orgb27fb25">Option[A]</h3>
 <ul>
 <li><code>Some[A]</code></li>
 <li><code>None</code></li>
@@ -316,8 +316,8 @@ def mapl[A, B](xs: List[A])(f: A =&gt; B): List[B] = reverse(foldLeft(xs, List.e
 </div>
 
 </section>
-<section id="slide-orga3d6856">
-<h3 id="orga3d6856">Either[E, A]</h3>
+<section id="slide-orgc89c218">
+<h3 id="orgc89c218">Either[E, A]</h3>
 <ul>
 <li><code>Left[E]</code></li>
 <li><code>Right[A]</code></li>
@@ -336,8 +336,8 @@ def mapl[A, B](xs: List[A])(f: A =&gt; B): List[B] = reverse(foldLeft(xs, List.e
 </section>
 </section>
 <section>
-<section id="slide-orgdde4018">
-<h2 id="orgdde4018">Interpreters</h2>
+<section id="slide-orgdb43333">
+<h2 id="orgdb43333">Interpreters</h2>
 <ul>
 <li>Your program <i>is</i> the data structure</li>
 <li>Your interpreter is the fold</li>
@@ -351,12 +351,12 @@ Can this be extended?
 </section>
 </section>
 <section>
-<section id="slide-org8f2be36">
-<h2 id="org8f2be36">Algebras</h2>
-<div class="outline-text-2" id="text-org8f2be36">
+<section id="slide-org9684a85">
+<h2 id="org9684a85">Algebras</h2>
+<div class="outline-text-2" id="text-org9684a85">
 </div></section>
-<section id="slide-org7e48766">
-<h3 id="org7e48766">What about&#x2026;</h3>
+<section id="slide-org629388c">
+<h3 id="org629388c">What about&#x2026;</h3>
 <ul>
 <li>Console?</li>
 <li>File access?</li>
@@ -373,8 +373,8 @@ Remember this slide?
 </aside>
 
 </section>
-<section id="slide-orgd6625cc">
-<h4 id="orgd6625cc">Console</h4>
+<section id="slide-org98ad27f">
+<h4 id="org98ad27f">Console</h4>
 <div class="org-src-container">
 
 <pre><code class="scala" >sealed trait Console[A]
@@ -384,8 +384,8 @@ case object Read extends Console[Option[String]]
 </div>
 
 </section>
-<section id="slide-orgaf15283">
-<h4 id="orgaf15283">File</h4>
+<section id="slide-orga1037fb">
+<h4 id="orga1037fb">File</h4>
 <div class="org-src-container">
 
 <pre><code class="scala" >sealed trait File[A]
@@ -398,8 +398,8 @@ case object Truncate extends File[Unit]
 
 
 </section>
-<section id="slide-orgd9899c7">
-<h4 id="orgd9899c7">And so on&#x2026;</h4>
+<section id="slide-orgdac2fc7">
+<h4 id="orgdac2fc7">And so on&#x2026;</h4>
 <p>
 An <i>algebra</i> is an abstract set of operations
 </p>
@@ -419,14 +419,14 @@ Using algebras, combinators, and folds, we simplify (evaluate) the program to a 
 </section>
 </section>
 <section>
-<section id="slide-org55a846f">
-<h2 id="org55a846f">?</h2>
+<section id="slide-org6324bfc">
+<h2 id="org6324bfc">?</h2>
 
 </section>
 </section>
 <section>
-<section id="slide-org168f5e0">
-<h2 id="org168f5e0">Thank you!</h2>
+<section id="slide-orga7853db">
+<h2 id="orga7853db">Thank you!</h2>
 <p>
 Bill Carlson
 </p>
@@ -442,8 +442,8 @@ Bill Carlson
 </section>
 </div>
 </div>
-<script src="http://cdn.jsdelivr.net/reveal.js/3.0.0/lib/js/head.min.js"></script>
-<script src="http://cdn.jsdelivr.net/reveal.js/3.0.0/js/reveal.js"></script>
+<script src="https://cdn.jsdelivr.net/reveal.js/3.0.0/lib/js/head.min.js"></script>
+<script src="https://cdn.jsdelivr.net/reveal.js/3.0.0/js/reveal.js"></script>
 
 <script>
 // Full list of configuration options available here:
@@ -470,7 +470,7 @@ multiplex: {
 
 // Optional libraries used to extend on reveal.js
 dependencies: [
- { src: 'http://cdn.jsdelivr.net/reveal.js/3.0.0/plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } }]
+ { src: 'https://cdn.jsdelivr.net/reveal.js/3.0.0/plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } }]
 });
 </script>
 </body>

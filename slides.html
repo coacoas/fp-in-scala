@@ -28,17 +28,14 @@
 <div class="slides">
 
 <section>
-<section id="slide-org7966c1d">
-<h2 id="org7966c1d">Functional Programming from First Principles</h2>
-<p>
-(in Scala!)
-</p>
+<section id="slide-orgb8ddd9c">
+<h2 id="orgb8ddd9c">Functional Programming</h2>
 
 </section>
 </section>
 <section>
-<section id="slide-org3ba22a6">
-<h2 id="org3ba22a6">Who am I?</h2>
+<section id="slide-org79f2e4a">
+<h2 id="org79f2e4a">Who am I?</h2>
 <ul>
 <li>Bill Carlson</li>
 <li>Innovation Developer at Cotiviti Labs</li>
@@ -49,15 +46,15 @@
 </section>
 </section>
 <section>
-<section id="slide-org425ca6a">
-<h2 id="org425ca6a">What is Functional Programming?</h2>
+<section id="slide-org9ce86f0">
+<h2 id="org9ce86f0">What is Functional Programming?</h2>
 <p class="fragment">
 Programming with Functions
 </p>
 
 </section>
-<section id="slide-orgb103cc1">
-<h3 id="orgb103cc1">What is a Function?</h3>
+<section id="slide-org32047b2">
+<h3 id="org32047b2">What is a Function?</h3>
 <p class="fragment">
 A function <code>f: A =&gt; B</code> maps any value from one set to <b>exactly one</b> value in another set.
 </p>
@@ -67,8 +64,8 @@ A function <code>f: A =&gt; B</code> maps any value from one set to <b>exactly o
 </p>
 
 </section>
-<section id="slide-org02f6d05">
-<h3 id="org02f6d05">What does that mean?</h3>
+<section id="slide-org15df3a4">
+<h3 id="org15df3a4">What does that mean?</h3>
 <ul class="fragment">
 <li><b>Totality</b>: A function will return a single value for all values of <code>A</code>.</li>
 <li><b>Determinism</b>: Every time you call a function with the same arguments, you will <i>always</i> get the same result.</li>
@@ -77,15 +74,15 @@ A function <code>f: A =&gt; B</code> maps any value from one set to <b>exactly o
 </ul>
 
 </section>
-<section id="slide-orga080c22">
-<h3 id="orga080c22">Referential Tranparency</h3>
+<section id="slide-org2f0932e">
+<h3 id="org2f0932e">Referential Tranparency</h3>
 <p>
 You can replace all occurrences of a function call with the result of that call without changing the program. 
 </p>
 
 </section>
-<section id="slide-org4bd178c">
-<h4 id="org4bd178c">Example</h4>
+<section id="slide-org3d19cb9">
+<h4 id="org3d19cb9">Example</h4>
 <div class="org-src-container">
 
 <pre><code class="scala" >val string = "some text"
@@ -105,8 +102,8 @@ val s3 = s1 append s2
 </div>
 
 </section>
-<section id="slide-org1b5648d">
-<h3 id="org1b5648d">What about&#x2026;</h3>
+<section id="slide-orgbc01d63">
+<h3 id="orgbc01d63">What about&#x2026;</h3>
 <ul>
 <li>Console?</li>
 <li>File access?</li>
@@ -125,62 +122,8 @@ We'll get to that&#x2026;
 </section>
 </section>
 <section>
-<section id="slide-orgee8c10f">
-<h2 id="orgee8c10f">Types</h2>
-</section>
-<section >
-
-<p>
-<code>def foo(i: Int): Int</code>
-</p>
-
-<p class="fragment">
-<code>def inc(i: Int) = i + 1</code>
-</p>
-
-<p class="fragment">
-<code>def timesTwo(i: Int) = i * 2</code>
-</p>
-
-<p class="fragment">
-<code>def abs(i: Int) = if (i &lt; 0) -i else i</code>
-</p>
-
-<p class="fragment">
-???
-</p>
-
-</section>
-<section >
-
-<p>
-<code>def bar[A](i: A): A</code>
-</p>
-
-<p>
-(assuming purity)
-</p>
-
-<p class="fragment">
-<code>def identity[A](i: A): A = i</code>
-</p>
-
-</section>
-<section >
-
-<p>
-[T]he purpose of abstracting is not to be vague, but to create a new semantic level in which one can be absolutely precise. 
-</p>
-
-<p>
-&#x2013; Edsger W. Dijkstra, "The Humble Programmer"
-</p>
-
-</section>
-</section>
-<section>
-<section id="slide-org0221317">
-<h2 id="org0221317">Higher-Order Functions</h2>
+<section id="slide-orga57bd78">
+<h2 id="orga57bd78">Higher-Order Functions</h2>
 </section>
 <section >
 
@@ -218,12 +161,12 @@ val or[A} = lift(</span> || _)
 </section>
 </section>
 <section>
-<section id="slide-org4edc9b7">
-<h2 id="org4edc9b7">Data Structures</h2>
-<div class="outline-text-2" id="text-org4edc9b7">
+<section id="slide-org062eadd">
+<h2 id="org062eadd">Data Structures</h2>
+<div class="outline-text-2" id="text-org062eadd">
 </div></section>
-<section id="slide-org3e03438">
-<h3 id="org3e03438">List</h3>
+<section id="slide-org16435e4">
+<h3 id="org16435e4">List</h3>
 <p>
 Empty List: <code>Nil</code>
 </p>
@@ -248,8 +191,8 @@ val list2 = 1 :: list1
 </div>
 
 </section>
-<section id="slide-org50f6f64">
-<h4 id="org50f6f64">It's time for more code!</h4>
+<section id="slide-org65fdb06">
+<h4 id="org65fdb06">It's time for more code!</h4>
 <aside class="notes">
 <p>
 def sum(ints: List[Int]): Int =
@@ -298,8 +241,8 @@ def mapl[A, B](xs: List[A])(f: A =&gt; B): List[B] = reverse(foldLeft(xs, List.e
 </aside>
 
 </section>
-<section id="slide-orgdedbb56">
-<h3 id="orgdedbb56">Option[A]</h3>
+<section id="slide-orga73fafa">
+<h3 id="orga73fafa">Option[A]</h3>
 <ul>
 <li><code>Some[A]</code></li>
 <li><code>None</code></li>
@@ -316,8 +259,8 @@ def mapl[A, B](xs: List[A])(f: A =&gt; B): List[B] = reverse(foldLeft(xs, List.e
 </div>
 
 </section>
-<section id="slide-orgde9e97e">
-<h3 id="orgde9e97e">Either[E, A]</h3>
+<section id="slide-orgfa62edf">
+<h3 id="orgfa62edf">Either[E, A]</h3>
 <ul>
 <li><code>Left[E]</code></li>
 <li><code>Right[A]</code></li>
@@ -336,8 +279,8 @@ def mapl[A, B](xs: List[A])(f: A =&gt; B): List[B] = reverse(foldLeft(xs, List.e
 </section>
 </section>
 <section>
-<section id="slide-org869df94">
-<h2 id="org869df94">Interpreters</h2>
+<section id="slide-org86d5464">
+<h2 id="org86d5464">Interpreters</h2>
 <ul>
 <li>Your program <i>is</i> the data structure</li>
 <li>Your interpreter is the fold</li>
@@ -351,12 +294,82 @@ Can this be extended?
 </section>
 </section>
 <section>
-<section id="slide-org46f00f6">
-<h2 id="org46f00f6">Algebras</h2>
-<div class="outline-text-2" id="text-org46f00f6">
+<section id="slide-orgc1c0a5f">
+<h2 id="orgc1c0a5f">Types</h2>
+<div class="outline-text-2" id="text-orgc1c0a5f">
 </div></section>
-<section id="slide-orge4e89ad">
-<h3 id="orge4e89ad">What about&#x2026;</h3>
+<section id="slide-orgaa78264">
+<h3 id="orgaa78264">What function is this?</h3>
+<p>
+<code>def ????(i: Int): Int</code>
+</p>
+
+<p class="fragment appear">
+<code>def inc(i: Int) = i + 1</code>
+</p>
+
+<p class="fragment appear">
+<code>def timesTwo(i: Int) = i * 2</code>
+</p>
+
+<p class="fragment appear">
+<code>def abs(i: Int) = if (i &lt; 0) -i else i</code>
+</p>
+
+<p class="fragment appear">
+<b>???</b>
+</p>
+
+</section>
+<section >
+
+<p>
+<code>def ????[A](i: A): A</code>
+</p>
+
+<p class="fragment">
+<code>def identity[A](i: A): A = i</code>
+</p>
+
+<aside class="notes">
+<p>
+Only true in the case of purity. Otherwise, it could also do something like: 
+</p>
+
+<p>
+def bar[A](i: A) = i.asInstanceOf[Int] + 1
+</p>
+
+<p>
+or 
+</p>
+
+<p>
+def bar[A}(i: A) = throw new RuntimeException("BWAHAHAHAHA!")
+</p>
+
+</aside>
+
+</section>
+<section >
+
+<p>
+[T]he purpose of abstracting is not to be vague, but to create a new semantic level in which one can be absolutely precise. 
+</p>
+
+<p>
+&#x2013; Edsger W. Dijkstra, "The Humble Programmer"
+</p>
+
+</section>
+</section>
+<section>
+<section id="slide-org16ed124">
+<h2 id="org16ed124">Algebras</h2>
+<div class="outline-text-2" id="text-org16ed124">
+</div></section>
+<section id="slide-org9edfc49">
+<h3 id="org9edfc49">What about&#x2026;</h3>
 <ul>
 <li>Console?</li>
 <li>File access?</li>
@@ -373,8 +386,8 @@ Remember this slide?
 </aside>
 
 </section>
-<section id="slide-org4ba7500">
-<h4 id="org4ba7500">Console</h4>
+<section id="slide-org501dae5">
+<h4 id="org501dae5">Console</h4>
 <div class="org-src-container">
 
 <pre><code class="scala" >sealed trait Console[A]
@@ -384,8 +397,8 @@ case object Read extends Console[Option[String]]
 </div>
 
 </section>
-<section id="slide-orgda29308">
-<h4 id="orgda29308">File</h4>
+<section id="slide-orgcfb1b27">
+<h4 id="orgcfb1b27">File</h4>
 <div class="org-src-container">
 
 <pre><code class="scala" >sealed trait File[A]
@@ -398,8 +411,8 @@ case object Truncate extends File[Unit]
 
 
 </section>
-<section id="slide-orgbd8f205">
-<h4 id="orgbd8f205">And so on&#x2026;</h4>
+<section id="slide-orga43f3f6">
+<h4 id="orga43f3f6">And so on&#x2026;</h4>
 <p>
 An <i>algebra</i> is an abstract set of operations
 </p>
@@ -419,14 +432,14 @@ Using algebras, combinators, and folds, we simplify (evaluate) the program to a 
 </section>
 </section>
 <section>
-<section id="slide-orgc96d644">
-<h2 id="orgc96d644">?</h2>
+<section id="slide-org9569568">
+<h2 id="org9569568">?</h2>
 
 </section>
 </section>
 <section>
-<section id="slide-orge3c35c7">
-<h2 id="orge3c35c7">Thank you!</h2>
+<section id="slide-org3f4e276">
+<h2 id="org3f4e276">Thank you!</h2>
 <p>
 Bill Carlson
 </p>
@@ -436,7 +449,11 @@ Bill Carlson
 </p>
 
 <p>
-<a href="https://twitter.com/coacoas">@coacoas</a>
+<a href="https://twitter.com/coacoas">Twitter: @coacoas</a>
+</p>
+
+<p>
+<a href="https://github.com/coacoas"><a href="https://github.com/coacoas">https://github.com/coacoas</a></a>
 </p>
 </section>
 </section>

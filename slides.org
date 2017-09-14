@@ -4,10 +4,9 @@
 #+REVEAL_PLUGINS: (highlight notes)
 #+Title: Functional Programming in Scala
 #+Author: Bill Carlson
-#+Email: @coacoas
+#+Email: bill@coacoas.net
 
-* Functional Programming from First Principles
-(in Scala!)
+* Functional Programming
 
 * Who am I? 
   * Bill Carlson
@@ -64,39 +63,6 @@ val s3 = s1 append s2
 #+BEGIN_NOTES
 We'll get to that...
 #+END_NOTES
-
-* Types
-
-#+REVEAL: split
-
-~def foo(i: Int): Int~
-
-#+ATTR_REVEAL: :frag t
-~def inc(i: Int) = i + 1~
-
-#+ATTR_REVEAL: :frag t
-~def timesTwo(i: Int) = i * 2~
-
-#+ATTR_REVEAL: :frag t
-~def abs(i: Int) = if (i < 0) -i else i~
-
-#+ATTR_REVEAL: :frag t
-???
-
-#+REVEAL: split
-
-~def bar[A](i: A): A~
-
-(assuming purity)
-
-#+ATTR_REVEAL: :frag t
-~def identity[A](i: A): A = i~
-
-#+REVEAL: split
-
-[T]he purpose of abstracting is not to be vague, but to create a new semantic level in which one can be absolutely precise. 
-
--- Edsger W. Dijkstra, "The Humble Programmer"
 
 * Higher-Order Functions
 
@@ -207,6 +173,47 @@ def fold[E, A](e: Either[E, A], z: E => B, f: A => B): B = e match {
 #+ATTR_REVEAL: :frag t
 Can this be extended? 
 
+* Types
+
+** What function is this? 
+
+~def ????(i: Int): Int~
+
+#+ATTR_REVEAL: :frag appear
+~def inc(i: Int) = i + 1~
+
+#+ATTR_REVEAL: :frag appear
+~def timesTwo(i: Int) = i * 2~
+
+#+ATTR_REVEAL: :frag appear
+~def abs(i: Int) = if (i < 0) -i else i~
+
+#+ATTR_REVEAL: :frag appear
+*???*
+
+#+REVEAL: split
+
+~def ????[A](i: A): A~
+
+#+ATTR_REVEAL: :frag t
+~def identity[A](i: A): A = i~
+
+#+BEGIN_NOTES
+Only true in the case of purity. Otherwise, it could also do something like: 
+
+def bar[A](i: A) = i.asInstanceOf[Int] + 1
+
+or 
+
+def bar[A}(i: A) = throw new RuntimeException("BWAHAHAHAHA!")
+#+END_NOTES
+
+#+REVEAL: split
+
+[T]he purpose of abstracting is not to be vague, but to create a new semantic level in which one can be absolutely precise. 
+
+-- Edsger W. Dijkstra, "The Humble Programmer"
+
 * Algebras
 
 ** What about... 
@@ -255,4 +262,6 @@ Bill Carlson
 
 [[mailto:bill@coacoas.net][bill@coacoas.net]]
 
-[[https://twitter.com/coacoas][@coacoas]]
+[[https://twitter.com/coacoas][Twitter: @coacoas]]
+
+[[https://github.com/coacoas][https://github.com/coacoas]]

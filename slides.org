@@ -8,6 +8,12 @@
 
 * Functional Programming
 
+* Inspiration
+
+Or, let's face it... copying
+
+[[https://www.youtube.com/watch?v=aAtPi23nLcw][Runar Bjarnasson - Introduction to Functional Programming]]
+
 * Who am I? 
   * Bill Carlson
   * Innovation Developer at Cotiviti Labs

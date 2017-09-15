@@ -28,14 +28,27 @@
 <div class="slides">
 
 <section>
-<section id="slide-orgb8ddd9c">
-<h2 id="orgb8ddd9c">Functional Programming</h2>
+<section id="slide-org7c86c8b">
+<h2 id="org7c86c8b">Functional Programming</h2>
 
 </section>
 </section>
 <section>
-<section id="slide-org79f2e4a">
-<h2 id="org79f2e4a">Who am I?</h2>
+<section id="slide-orga477698">
+<h2 id="orga477698">Inspiration</h2>
+<p>
+Or, let's face it&#x2026; copying
+</p>
+
+<p>
+<a href="https://www.youtube.com/watch?v=aAtPi23nLcw">Runar Bjarnasson - Introduction to Functional Programming</a>
+</p>
+
+</section>
+</section>
+<section>
+<section id="slide-org2f6c299">
+<h2 id="org2f6c299">Who am I?</h2>
 <ul>
 <li>Bill Carlson</li>
 <li>Innovation Developer at Cotiviti Labs</li>
@@ -46,15 +59,15 @@
 </section>
 </section>
 <section>
-<section id="slide-org9ce86f0">
-<h2 id="org9ce86f0">What is Functional Programming?</h2>
+<section id="slide-org20f0aad">
+<h2 id="org20f0aad">What is Functional Programming?</h2>
 <p class="fragment">
 Programming with Functions
 </p>
 
 </section>
-<section id="slide-org32047b2">
-<h3 id="org32047b2">What is a Function?</h3>
+<section id="slide-orgb96ec32">
+<h3 id="orgb96ec32">What is a Function?</h3>
 <p class="fragment">
 A function <code>f: A =&gt; B</code> maps any value from one set to <b>exactly one</b> value in another set.
 </p>
@@ -64,8 +77,8 @@ A function <code>f: A =&gt; B</code> maps any value from one set to <b>exactly o
 </p>
 
 </section>
-<section id="slide-org15df3a4">
-<h3 id="org15df3a4">What does that mean?</h3>
+<section id="slide-orgd262a4f">
+<h3 id="orgd262a4f">What does that mean?</h3>
 <ul class="fragment">
 <li><b>Totality</b>: A function will return a single value for all values of <code>A</code>.</li>
 <li><b>Determinism</b>: Every time you call a function with the same arguments, you will <i>always</i> get the same result.</li>
@@ -74,15 +87,15 @@ A function <code>f: A =&gt; B</code> maps any value from one set to <b>exactly o
 </ul>
 
 </section>
-<section id="slide-org2f0932e">
-<h3 id="org2f0932e">Referential Tranparency</h3>
+<section id="slide-orgbc881c0">
+<h3 id="orgbc881c0">Referential Tranparency</h3>
 <p>
 You can replace all occurrences of a function call with the result of that call without changing the program. 
 </p>
 
 </section>
-<section id="slide-org3d19cb9">
-<h4 id="org3d19cb9">Example</h4>
+<section id="slide-orgf9bde5c">
+<h4 id="orgf9bde5c">Example</h4>
 <div class="org-src-container">
 
 <pre><code class="scala" >val string = "some text"
@@ -102,8 +115,8 @@ val s3 = s1 append s2
 </div>
 
 </section>
-<section id="slide-orgbc01d63">
-<h3 id="orgbc01d63">What about&#x2026;</h3>
+<section id="slide-org989770a">
+<h3 id="org989770a">What about&#x2026;</h3>
 <ul>
 <li>Console?</li>
 <li>File access?</li>
@@ -122,8 +135,8 @@ We'll get to that&#x2026;
 </section>
 </section>
 <section>
-<section id="slide-orga57bd78">
-<h2 id="orga57bd78">Higher-Order Functions</h2>
+<section id="slide-orgcb4af94">
+<h2 id="orgcb4af94">Higher-Order Functions</h2>
 </section>
 <section >
 
@@ -161,12 +174,12 @@ val or[A} = lift(</span> || _)
 </section>
 </section>
 <section>
-<section id="slide-org062eadd">
-<h2 id="org062eadd">Data Structures</h2>
-<div class="outline-text-2" id="text-org062eadd">
+<section id="slide-orga6b62a0">
+<h2 id="orga6b62a0">Data Structures</h2>
+<div class="outline-text-2" id="text-orga6b62a0">
 </div></section>
-<section id="slide-org16435e4">
-<h3 id="org16435e4">List</h3>
+<section id="slide-org5b144b8">
+<h3 id="org5b144b8">List</h3>
 <p>
 Empty List: <code>Nil</code>
 </p>
@@ -191,8 +204,8 @@ val list2 = 1 :: list1
 </div>
 
 </section>
-<section id="slide-org65fdb06">
-<h4 id="org65fdb06">It's time for more code!</h4>
+<section id="slide-org3b95139">
+<h4 id="org3b95139">It's time for more code!</h4>
 <aside class="notes">
 <p>
 def sum(ints: List[Int]): Int =
@@ -241,8 +254,8 @@ def mapl[A, B](xs: List[A])(f: A =&gt; B): List[B] = reverse(foldLeft(xs, List.e
 </aside>
 
 </section>
-<section id="slide-orga73fafa">
-<h3 id="orga73fafa">Option[A]</h3>
+<section id="slide-org80e57eb">
+<h3 id="org80e57eb">Option[A]</h3>
 <ul>
 <li><code>Some[A]</code></li>
 <li><code>None</code></li>
@@ -259,8 +272,8 @@ def mapl[A, B](xs: List[A])(f: A =&gt; B): List[B] = reverse(foldLeft(xs, List.e
 </div>
 
 </section>
-<section id="slide-orgfa62edf">
-<h3 id="orgfa62edf">Either[E, A]</h3>
+<section id="slide-org33fef77">
+<h3 id="org33fef77">Either[E, A]</h3>
 <ul>
 <li><code>Left[E]</code></li>
 <li><code>Right[A]</code></li>
@@ -279,8 +292,8 @@ def mapl[A, B](xs: List[A])(f: A =&gt; B): List[B] = reverse(foldLeft(xs, List.e
 </section>
 </section>
 <section>
-<section id="slide-org86d5464">
-<h2 id="org86d5464">Interpreters</h2>
+<section id="slide-org4caf120">
+<h2 id="org4caf120">Interpreters</h2>
 <ul>
 <li>Your program <i>is</i> the data structure</li>
 <li>Your interpreter is the fold</li>
@@ -294,12 +307,12 @@ Can this be extended?
 </section>
 </section>
 <section>
-<section id="slide-orgc1c0a5f">
-<h2 id="orgc1c0a5f">Types</h2>
-<div class="outline-text-2" id="text-orgc1c0a5f">
+<section id="slide-org940697c">
+<h2 id="org940697c">Types</h2>
+<div class="outline-text-2" id="text-org940697c">
 </div></section>
-<section id="slide-orgaa78264">
-<h3 id="orgaa78264">What function is this?</h3>
+<section id="slide-orgf8a9aaf">
+<h3 id="orgf8a9aaf">What function is this?</h3>
 <p>
 <code>def ????(i: Int): Int</code>
 </p>
@@ -364,12 +377,12 @@ def bar[A}(i: A) = throw new RuntimeException("BWAHAHAHAHA!")
 </section>
 </section>
 <section>
-<section id="slide-org16ed124">
-<h2 id="org16ed124">Algebras</h2>
-<div class="outline-text-2" id="text-org16ed124">
+<section id="slide-orgf8665d5">
+<h2 id="orgf8665d5">Algebras</h2>
+<div class="outline-text-2" id="text-orgf8665d5">
 </div></section>
-<section id="slide-org9edfc49">
-<h3 id="org9edfc49">What about&#x2026;</h3>
+<section id="slide-org159ace1">
+<h3 id="org159ace1">What about&#x2026;</h3>
 <ul>
 <li>Console?</li>
 <li>File access?</li>
@@ -386,8 +399,8 @@ Remember this slide?
 </aside>
 
 </section>
-<section id="slide-org501dae5">
-<h4 id="org501dae5">Console</h4>
+<section id="slide-org2a2d482">
+<h4 id="org2a2d482">Console</h4>
 <div class="org-src-container">
 
 <pre><code class="scala" >sealed trait Console[A]
@@ -397,8 +410,8 @@ case object Read extends Console[Option[String]]
 </div>
 
 </section>
-<section id="slide-orgcfb1b27">
-<h4 id="orgcfb1b27">File</h4>
+<section id="slide-orgaf475f6">
+<h4 id="orgaf475f6">File</h4>
 <div class="org-src-container">
 
 <pre><code class="scala" >sealed trait File[A]
@@ -411,8 +424,8 @@ case object Truncate extends File[Unit]
 
 
 </section>
-<section id="slide-orga43f3f6">
-<h4 id="orga43f3f6">And so on&#x2026;</h4>
+<section id="slide-org66ef092">
+<h4 id="org66ef092">And so on&#x2026;</h4>
 <p>
 An <i>algebra</i> is an abstract set of operations
 </p>
@@ -432,14 +445,14 @@ Using algebras, combinators, and folds, we simplify (evaluate) the program to a 
 </section>
 </section>
 <section>
-<section id="slide-org9569568">
-<h2 id="org9569568">?</h2>
+<section id="slide-org09a67f5">
+<h2 id="org09a67f5">?</h2>
 
 </section>
 </section>
 <section>
-<section id="slide-org3f4e276">
-<h2 id="org3f4e276">Thank you!</h2>
+<section id="slide-org9427187">
+<h2 id="org9427187">Thank you!</h2>
 <p>
 Bill Carlson
 </p>

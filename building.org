@@ -1,0 +1,148 @@
+#+OPTIONS: num:nil toc:nil reveal_title_slide:nil
+#+REVEAL_TRANS: slide
+#+REVEAL_THEME: sky
+#+REVEAL_PLUGINS: (highlight notes)
+#+REVEAL_HLEVEL: 2
+
+#+Title: Building A Program
+#+Author: Bill Carlson
+#+Email: bill@coacoas.net
+
+** About Me
+*** Bill Carlson
+*** Cotiviti Labs
+*** The Bungalow
+
+** Last Time in "Functional Programming"
+#+ATTR_REVEAL: :frag t
+- Programming with functions
+#+ATTR_REVEAL: :frag t
+- Referential transparency
+
+#+REVEAL: split
+
+A program is /evaluated/ by repeated substitution of function calls with the values they represent. 
+
+#+REVEAL: split
+
+The code is simply an interpreter for a particular algebra.  The program is the data that gets evaluated. 
+
+#+REVEAL: split
+
+But how do you actually /build/ the program? 
+
+** A Brief Foray Into Category Theory
+
+*** Categories
+
+#+ATTR_REVEAL: :frag (none t)
+- A collection of stuff
+- Types? 
+
+*** Arrows
+
+#+ATTR_REVEAL: :frag (none t)
+- Transformations between categories
+- All categories have an /identity/ arrow
+- Functions? 
+
+* Data Types Revisited
+
+Standard Types
+- ~Int~
+- ~String~
+
+Higher-Kinded Types
+- ~Option[A]~
+- ~List[A]~
+- ~Either[E, A]~
+
+* Algebraic Combinators
+
+** Monoid
+
+#+BEGIN_SRC scala
+trait Monoid[A] { 
+  val zero: A
+  def append(a: A, b: A)): A
+}
+#+END_SRC
+
+*** String concatenation
+
+#+BEGIN_SRC scala
+val stringConcat = new Monoid[String] { 
+  val zero: String = ""
+  def append(a: String, b: String)) = a + b
+}
+#+END_SRC
+
+*** Integer Addition
+
+#+BEGIN_SRC scala
+val additionMonoid = new Monoid[Int] { 
+  val zero: Int = 0
+  def append(a: Int, b: Int)) = a + b
+}
+#+END_SRC
+
+*** Integer Multiplication
+
+#+BEGIN_SRC scala
+val multiplicationMonoid = new Monoid[Int] { 
+  val zero: Int = 1
+  def append(a: Int, b: Int)) = a * b
+}
+#+END_SRC
+
+*** Option
+
+#+BEGIN_SRC scala
+def optionMonoid[A : Monoid] = new Monoid[Option[A]] { 
+  val zero: Int = None
+  def append(a: Option[A], b: Option[A])) = a match { 
+    case None => b
+    case Some(x) => b match { 
+      case None => a
+      case Some(y) => Some(implicitly[Monoid[A]].append(x, y))
+    }
+  }
+}
+
+optionMonoid[Int].append(Some(3), Some(4)) == Some(7)
+optionMonoid[Int].append(Some(3), None) == Some(3)
+#+END_SRC
+
+*** Sum
+#+BEGIN_SRC scala
+def sum[A : Monoid](as: List[A]): A = {
+  val monoid = implicitly[Monoid[A]]
+  foldLeft(as)(monoid.zero)(monoid.append)
+}
+
+sum(List(1, 2, 3, 4)) // 10
+sum(List("how", "now", "brown", "cow")  // "hownowbrowncow"
+#+END_SRC
+
+
+** Functor
+
+** Applicative
+
+** Monad
+
+* Composition
+
+** Function
+
+** Functor
+
+** Applicative
+
+** Monad
+
+#+ATTR_REVEAL: :frag t
+(?)
+
+#+ATTR_REVEAL: :frag t
+Monads do not generically compose

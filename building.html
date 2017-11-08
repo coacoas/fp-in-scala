@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<title>Building A Program</title>
+<meta name="author" content="(Bill Carlson)"/>
+<style type="text/css">
+.underline { text-decoration: underline; }
+</style>
+<link rel="stylesheet" href="./reveal.js/css/reveal.css"/>
+
+<link rel="stylesheet" href="./reveal.js/css/theme/sky.css" id="theme"/>
+
+<link rel="stylesheet" href="./reveal.js/lib/css/zenburn.css"/>
+<!-- If the query includes 'print-pdf', include the PDF print sheet -->
+<script>
+    if( window.location.search.match( /print-pdf/gi ) ) {
+        var link = document.createElement( 'link' );
+        link.rel = 'stylesheet';
+        link.type = 'text/css';
+        link.href = './reveal.js/css/print/pdf.css';
+        document.getElementsByTagName( 'head' )[0].appendChild( link );
+    }
+</script>
+</head>
+<body>
+<div class="reveal">
+<div class="slides">
+
+</section>
+</section>
+<section>
+<section id="slide-orga3924d3">
+<h3 id="orga3924d3">About Me</h3>
+<div class="outline-text-3" id="text-orga3924d3">
+</div>
+</section>
+<section id="slide-org3e4c4c3">
+<h4 id="org3e4c4c3">Bill Carlson</h4>
+</section>
+<section id="slide-org8c6362a">
+<h4 id="org8c6362a">Cotiviti Labs</h4>
+</section>
+<section id="slide-orgb07aede">
+<h4 id="orgb07aede">The Bungalow</h4>
+
+</section>
+</section>
+<section>
+<section id="slide-orgbe9224a">
+<h3 id="orgbe9224a">Last Time in "Functional Programming"</h3>
+<ul class="fragment">
+<li>Programming with functions</li>
+
+</ul>
+<ul class="fragment">
+<li>Referential transparency</li>
+
+</ul>
+
+</section>
+<section >
+
+<p>
+A program is <i>evaluated</i> by repeated substitution of function calls with the values they represent. 
+</p>
+
+</section>
+<section >
+
+<p>
+The code is simply an interpreter for a particular algebra.  The program is the data that gets evaluated. 
+</p>
+
+</section>
+<section >
+
+<p>
+But how do you actually <i>build</i> the program? 
+</p>
+
+</section>
+</section>
+<section>
+<section id="slide-orgf4550be">
+<h3 id="orgf4550be">A Brief Foray Into Category Theory</h3>
+<div class="outline-text-3" id="text-orgf4550be">
+</div>
+</section>
+<section id="slide-orgdf9028e">
+<h4 id="orgdf9028e">Categories</h4>
+<ul>
+<li>A collection of stuff</li>
+<li class="fragment">Types?</li>
+
+</ul>
+
+</section>
+<section id="slide-orgad15caa">
+<h4 id="orgad15caa">Arrows</h4>
+<ul>
+<li>Transformations between categories</li>
+<li class="fragment">All categories have an <i>identity</i> arrow</li>
+<li class="fragment">Functions?</li>
+
+</ul>
+
+</section>
+</section>
+<section>
+<section id="slide-org2dc502c">
+<h2 id="org2dc502c">Data Types Revisited</h2>
+<p>
+Standard Types
+</p>
+<ul>
+<li><code>Int</code></li>
+<li><code>String</code></li>
+
+</ul>
+
+<p>
+Higher-Kinded Types
+</p>
+<ul>
+<li><code>Option[A]</code></li>
+<li><code>List[A]</code></li>
+<li><code>Either[E, A]</code></li>
+
+</ul>
+
+</section>
+</section>
+<section>
+<section id="slide-org05297f8">
+<h2 id="org05297f8">Algebraic Combinators</h2>
+<div class="outline-text-2" id="text-org05297f8">
+</div>
+</section>
+</section>
+<section>
+<section id="slide-orgf60a7b1">
+<h3 id="orgf60a7b1">Monoid</h3>
+<div class="org-src-container">
+
+<pre><code class="scala" >trait Monoid[A] { 
+  val zero: A
+  def append(a: A, b: A)): A
+}
+</code></pre>
+</div>
+
+</section>
+<section id="slide-orgc9a60fd">
+<h4 id="orgc9a60fd">String concatenation</h4>
+<div class="org-src-container">
+
+<pre><code class="scala" >val stringConcat = new Monoid[String] { 
+  val zero: String = ""
+  def append(a: String, b: String)) = a + b
+}
+</code></pre>
+</div>
+
+</section>
+<section id="slide-orgca6556f">
+<h4 id="orgca6556f">Integer Addition</h4>
+<div class="org-src-container">
+
+<pre><code class="scala" >val additionMonoid = new Monoid[Int] { 
+  val zero: Int = 0
+  def append(a: Int, b: Int)) = a + b
+}
+</code></pre>
+</div>
+
+</section>
+<section id="slide-orgeeabccf">
+<h4 id="orgeeabccf">Integer Multiplication</h4>
+<div class="org-src-container">
+
+<pre><code class="scala" >val multiplicationMonoid = new Monoid[Int] { 
+  val zero: Int = 1
+  def append(a: Int, b: Int)) = a * b
+}
+</code></pre>
+</div>
+
+</section>
+<section id="slide-org434600b">
+<h4 id="org434600b">Option</h4>
+<div class="org-src-container">
+
+<pre><code class="scala" >def optionMonoid[A : Monoid] = new Monoid[Option[A]] { 
+  val zero: Int = None
+  def append(a: Option[A], b: Option[A])) = a match { 
+    case None => b
+    case Some(x) => b match { 
+      case None => a
+      case Some(y) => Some(implicitly[Monoid[A]].append(x, y))
+    }
+  }
+}
+
+optionMonoid[Int].append(Some(3), Some(4)) == Some(7)
+optionMonoid[Int].append(Some(3), None) == Some(3)
+</code></pre>
+</div>
+
+</section>
+<section id="slide-org80962f5">
+<h4 id="org80962f5">Sum</h4>
+<div class="org-src-container">
+
+<pre><code class="scala" >def sum[A : Monoid](as: List[A]): A = {
+  val monoid = implicitly[Monoid[A]]
+  foldLeft(as)(monoid.zero)(monoid.append)
+}
+
+sum(List(1, 2, 3, 4)) // 10
+sum(List("how", "now", "brown", "cow")  // "hownowbrowncow"
+</code></pre>
+</div>
+
+
+</section>
+</section>
+<section>
+<section id="slide-org37a6863">
+<h3 id="org37a6863">Functor</h3>
+
+</section>
+</section>
+<section>
+<section id="slide-org6b9f118">
+<h3 id="org6b9f118">Applicative</h3>
+
+</section>
+</section>
+<section>
+<section id="slide-orga5f18de">
+<h3 id="orga5f18de">Monad</h3>
+
+</section>
+</section>
+<section>
+<section id="slide-orge9be405">
+<h2 id="orge9be405">Composition</h2>
+<div class="outline-text-2" id="text-orge9be405">
+</div>
+</section>
+</section>
+<section>
+<section id="slide-orge3fb084">
+<h3 id="orge3fb084">Function</h3>
+
+</section>
+</section>
+<section>
+<section id="slide-orgd310654">
+<h3 id="orgd310654">Functor</h3>
+
+</section>
+</section>
+<section>
+<section id="slide-org1eae977">
+<h3 id="org1eae977">Applicative</h3>
+
+</section>
+</section>
+<section>
+<section id="slide-org1de4e23">
+<h3 id="org1de4e23">Monad</h3>
+<p class="fragment">
+(?)
+</p>
+
+<p class="fragment">
+Monads do not generically compose
+</p>
+</section>
+</section>
+</div>
+</div>
+<script src="./reveal.js/lib/js/head.min.js"></script>
+<script src="./reveal.js/js/reveal.js"></script>
+
+<script>
+// Full list of configuration options available here:
+// https://github.com/hakimel/reveal.js#configuration
+Reveal.initialize({
+
+controls: true,
+progress: true,
+history: false,
+center: true,
+slideNumber: 'c',
+rollingLinks: false,
+keyboard: true,
+overview: true,
+
+theme: Reveal.getQueryHash().theme, // available themes are in /css/theme
+transition: Reveal.getQueryHash().transition || 'slide', // default/cube/page/concave/zoom/linear/fade/none
+transitionSpeed: 'default',
+multiplex: {
+    secret: '', // null if client
+    id: '', // id, obtained from socket.io server
+    url: '' // Location of socket.io server
+},
+
+// Optional libraries used to extend on reveal.js
+dependencies: [
+ { src: './reveal.js/plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } },
+ { src: './reveal.js/plugin/notes/notes.js', async: true, condition: function() { return !!document.body.classList; } }]
+});
+</script>
+</body>
+</html>

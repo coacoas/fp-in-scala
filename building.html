@@ -32,26 +32,26 @@
 </section>
 </section>
 <section>
-<section id="slide-org4e39427">
-<h3 id="org4e39427">About Me</h3>
-<div class="outline-text-3" id="text-org4e39427">
+<section id="slide-org6cc8bf3">
+<h3 id="org6cc8bf3">About Me</h3>
+<div class="outline-text-3" id="text-org6cc8bf3">
 </div>
 </section>
-<section id="slide-orgd1edc8d">
-<h4 id="orgd1edc8d">Bill Carlson</h4>
+<section id="slide-org3d9255b">
+<h4 id="org3d9255b">Bill Carlson</h4>
 </section>
-<section id="slide-orgfc81358">
-<h4 id="orgfc81358">Cotiviti Labs</h4>
+<section id="slide-org72ce98e">
+<h4 id="org72ce98e">Cotiviti Labs</h4>
 </section>
-<section id="slide-org5194349">
-<h4 id="org5194349"><a href="https://www.facebook.com/BungalowJax/">The Bungalow</a></h4>
+<section id="slide-orga3b576c">
+<h4 id="orga3b576c"><a href="https://www.facebook.com/BungalowJax/">The Bungalow</a></h4>
 <img src="bungalow.png" width="400"/>
 
 </section>
 </section>
 <section>
-<section id="slide-orgb213151">
-<h3 id="orgb213151">Last Time in "Functional Programming"</h3>
+<section id="slide-orgb2e047a">
+<h3 id="orgb2e047a">Last Time in "Functional Programming"</h3>
 <ul class="fragment">
 <li>Programming with functions</li>
 
@@ -85,8 +85,8 @@ But how do you actually <i>build</i> the program?
 </section>
 </section>
 <section>
-<section id="slide-org0776dfe">
-<h2 id="org0776dfe">Data Types Revisited</h2>
+<section id="slide-org35aa41d">
+<h2 id="org35aa41d">Data Types Revisited</h2>
 <p>
 Standard Types
 </p>
@@ -109,13 +109,13 @@ Higher-Kinded Types
 </section>
 </section>
 <section>
-<section id="slide-org5f0685f">
-<h2 id="org5f0685f">Typeclasses</h2>
-<div class="outline-text-2" id="text-org5f0685f">
+<section id="slide-org2dd928e">
+<h2 id="org2dd928e">Typeclasses</h2>
+<div class="outline-text-2" id="text-org2dd928e">
 </div>
 </section>
-<section id="slide-org94c023b">
-<h4 id="org94c023b">Typeclasses</h4>
+<section id="slide-orgc146b08">
+<h4 id="orgc146b08">Typeclasses</h4>
 <ul>
 <li>Typeclasses are a mechanism to allow for <b>ad-hoc polymorphism</b></li>
 <li>The typeclass declares an interface</li>
@@ -124,12 +124,12 @@ Higher-Kinded Types
 </ul>
 
 </section>
-<section id="slide-org8fa0227">
-<h4 id="org8fa0227">Typeclasses allow you to modify behavior of code you don't own.</h4>
+<section id="slide-orgffa4034">
+<h4 id="orgffa4034">Typeclasses allow you to modify behavior of code you don't own.</h4>
 
 </section>
-<section id="slide-orge6dfe23">
-<h4 id="orge6dfe23">Typeclasses</h4>
+<section id="slide-org4db76d3">
+<h4 id="org4db76d3">Typeclasses</h4>
 <div class="org-src-container">
 
 <pre><code class="scala" >trait Show[A] { 
@@ -157,8 +157,8 @@ Higher-Kinded Types
 </div>
 
 </section>
-<section id="slide-orgff15237">
-<h4 id="orgff15237">Typeclasses</h4>
+<section id="slide-org27e0b96">
+<h4 id="org27e0b96">Typeclasses</h4>
 <div class="org-src-container">
 
 <pre><code class="scala" >// A polymorphic function that works only when there is an implicit 
@@ -180,15 +180,15 @@ def log[A : Show](a: A) = println(Show[A].show(a))
 </section>
 </section>
 <section>
-<section id="slide-org4d5a2fe">
-<h2 id="org4d5a2fe">Algebraic Combinators</h2>
-<div class="outline-text-2" id="text-org4d5a2fe">
+<section id="slide-orgd62c999">
+<h2 id="orgd62c999">Algebraic Combinators</h2>
+<div class="outline-text-2" id="text-orgd62c999">
 </div>
 </section>
 </section>
 <section>
-<section id="slide-org6becbc0">
-<h3 id="org6becbc0">Monoid</h3>
+<section id="slide-orgfbfc81c">
+<h3 id="orgfbfc81c">Monoid</h3>
 <div class="org-src-container">
 
 <pre><code class="scala" >trait Monoid[A] { 
@@ -199,8 +199,8 @@ def log[A : Show](a: A) = println(Show[A].show(a))
 </div>
 
 </section>
-<section id="slide-org0c77146">
-<h4 id="org0c77146">String concatenation</h4>
+<section id="slide-org3837756">
+<h4 id="org3837756">String concatenation</h4>
 <div class="org-src-container">
 
 <pre><code class="scala" >val stringConcat = new Monoid[String] { 
@@ -211,8 +211,8 @@ def log[A : Show](a: A) = println(Show[A].show(a))
 </div>
 
 </section>
-<section id="slide-org0add538">
-<h4 id="org0add538">Integer Addition</h4>
+<section id="slide-org7607d64">
+<h4 id="org7607d64">Integer Addition</h4>
 <div class="org-src-container">
 
 <pre><code class="scala" >val additionMonoid = new Monoid[Int] { 
@@ -223,8 +223,8 @@ def log[A : Show](a: A) = println(Show[A].show(a))
 </div>
 
 </section>
-<section id="slide-orga4b9dfd">
-<h4 id="orga4b9dfd">Integer Multiplication</h4>
+<section id="slide-org83ca564">
+<h4 id="org83ca564">Integer Multiplication</h4>
 <div class="org-src-container">
 
 <pre><code class="scala" >val multiplicationMonoid = new Monoid[Int] { 
@@ -235,8 +235,8 @@ def log[A : Show](a: A) = println(Show[A].show(a))
 </div>
 
 </section>
-<section id="slide-org6a7ccd7">
-<h4 id="org6a7ccd7">Laws</h4>
+<section id="slide-org821d3ff">
+<h4 id="org821d3ff">Laws</h4>
 <p>
 Right Identity
 </p>
@@ -263,8 +263,8 @@ Associativity
 </div>
 
 </section>
-<section id="slide-orgb0559c8">
-<h4 id="orgb0559c8">Option</h4>
+<section id="slide-org8a653cb">
+<h4 id="org8a653cb">Option</h4>
 <div class="org-src-container">
 
 <pre><code class="scala" >def optionMonoid[A : Monoid] = new Monoid[Option[A]] { 
@@ -286,22 +286,24 @@ optionMonoid[Int].append(Some(3), None) == Some(3)
 </section>
 </section>
 <section>
-<section id="slide-orgeb790bf">
-<h3 id="orgeb790bf">Foldable</h3>
+<section id="slide-orgbf502cc">
+<h3 id="orgbf502cc">Foldable</h3>
 <div class="org-src-container">
 
 <pre><code class="scala" >trait Foldable[F[_]] {
-  def fodlLeft[A, B](a: F[A])(z: B)(f: (B, A) => B): B
+  def foldLeft[A, B](a: F[A])(z: B)(f: (B, A) => B): B
   def foldRight[A, B](a: F[A])(z: B)(f: (A, B) => B): B
   def foldMap[A, B : Monoid](a: F[A])(f: A => B): B = 
-    foldLeft(a)(Monoid[B].empty)((b, a) => Monoid[B].append(b, f(b)))
+    foldLeft(a)(Monoid[B].empty) { (b, a) => 
+      Monoid[B].append(b, f(b))
+    }
 }
 </code></pre>
 </div>
 
 </section>
-<section id="slide-org2987378">
-<h4 id="org2987378">Combine</h4>
+<section id="slide-orgedc0cd8">
+<h4 id="orgedc0cd8">Combine</h4>
 <div class="org-src-container">
 
 <pre><code class="scala" >def combine[F[_], A : Monoid](a: F[A]): A = 
@@ -313,8 +315,8 @@ combine(List("how", "now", "brown", "cow")  // "hownowbrowncow"
 </div>
 
 </section>
-<section id="slide-orgaa8c461">
-<h4 id="orgaa8c461">Count</h4>
+<section id="slide-orge227fa8">
+<h4 id="orge227fa8">Count</h4>
 <div class="org-src-container">
 
 <pre><code class="scala" >def count[F[_], A : Monoid](a: F[A]): A = 
@@ -330,8 +332,8 @@ count(List(1,2,3,4)) // 4
 </section>
 </section>
 <section>
-<section id="slide-orgbf95e64">
-<h3 id="orgbf95e64">Functor</h3>
+<section id="slide-org1d12ba8">
+<h3 id="org1d12ba8">Functor</h3>
 <div class="org-src-container">
 
 <pre><code class="scala" >trait Functor[F[_]] { 
@@ -341,15 +343,15 @@ count(List(1,2,3,4)) // 4
 </div>
 
 </section>
-<section id="slide-org2511f75">
-<h4 id="org2511f75">Which means?</h4>
+<section id="slide-orgd541c8d">
+<h4 id="orgd541c8d">Which means?</h4>
 <p>
 <code>map</code> allows you to modify the values within a context without modifying the shape of the context
 </p>
 
 </section>
-<section id="slide-org92f9e4e">
-<h4 id="org92f9e4e">What does <i>that</i> mean?</h4>
+<section id="slide-orgc8927ae">
+<h4 id="orgc8927ae">What does <i>that</i> mean?</h4>
 <div class="org-src-container">
 
 <pre><code class="scala" >Functor[Option].map(Some(4), (_: Int) * 2) === Some(8)
@@ -364,8 +366,8 @@ Functor[List].map(List.empty[Int], (_: Int) * 2) === List()
 </div>
 
 </section>
-<section id="slide-orgdec9887">
-<h4 id="orgdec9887">Laws</h4>
+<section id="slide-org305c1bd">
+<h4 id="org305c1bd">Laws</h4>
 <p>
 Identity
 </p>
@@ -391,8 +393,8 @@ Composition
 </section>
 </section>
 <section>
-<section id="slide-org24553e3">
-<h3 id="org24553e3">Applicative</h3>
+<section id="slide-org3ccbd10">
+<h3 id="org3ccbd10">Applicative</h3>
 <p>
 Because not every function has one argument&#x2026; 
 </p>
@@ -435,8 +437,8 @@ What happens if you have a function
 </div>
 
 </section>
-<section id="slide-orgba46c72">
-<h4 id="orgba46c72">Applicative</h4>
+<section id="slide-orge39a23b">
+<h4 id="orge39a23b">Applicative</h4>
 <div class="org-src-container">
 
 <pre><code class="scala" >trait Apply[F[_]] { 
@@ -458,8 +460,8 @@ Some(4) <*> fOption
 </div>
 
 </section>
-<section id="slide-org83a7b49">
-<h4 id="org83a7b49">Extensions</h4>
+<section id="slide-org3d2257b">
+<h4 id="org3d2257b">Extensions</h4>
 <div class="org-src-container">
 
 <pre><code class="scala" >trait Applicative[F[_]] extends Apply[F] with  Functor[F] { 
@@ -477,47 +479,51 @@ Some(4) <*> fOption
 </section>
 </section>
 <section>
-<section id="slide-orgb54fdab">
-<h3 id="orgb54fdab">Monad</h3>
-<div class="outline-text-3" id="text-orgb54fdab">
+<section id="slide-orgdefda8d">
+<h3 id="orgdefda8d">Monad</h3>
+<div class="outline-text-3" id="text-orgdefda8d">
 </div>
 </section>
-<section id="slide-orgae5e884">
-<h4 id="orgae5e884">Monad</h4>
+<section id="slide-org0c8e09e">
+<h4 id="org0c8e09e">Monad</h4>
 <p>
 It's really not that scary
 </p>
 
 </section>
-<section id="slide-orgac26fed">
-<h4 id="orgac26fed">Monad</h4>
-<pre  class="example">
-trait Monad[F[_]] extends Applicative[F] {
-  def flatMap[A, B](a: F[A])(f: A =&gt; F[B]): F[B]
+<section id="slide-orgf963818">
+<h4 id="orgf963818">Monad</h4>
+<div class="org-src-container">
+
+<pre><code class="scala" >trait Monad[F[_]] extends Applicative[F] {
+  def flatMap[A, B](a: F[A])(f: A => F[B]): F[B]
 }
-</pre>
+</code></pre>
+</div>
 
 </section>
-<section id="slide-org41572b6">
-<h4 id="org41572b6">Why?</h4>
-<pre  class="example">
-def getUser(id: String): Option[User]
+<section id="slide-orgf01b379">
+<h4 id="orgf01b379">Why?</h4>
+<div class="org-src-container">
+
+<pre><code class="scala" >def getUser(id: String): Option[User]
 def getAddress(user: User): Option[Address]
 
 def getAddressForId(id: Sting) = 
-  getUser(id).flatMap { user =&gt; 
+  getUser(id).flatMap { user => 
     getAddress(user)
   }
 
-</pre>
+</code></pre>
+</div>
 
 <p class="fragment">
 This gets ugly really fast. 
 </p>
 
 </section>
-<section id="slide-org973fd65">
-<h4 id="org973fd65">for-comprehension</h4>
+<section id="slide-org8d309c0">
+<h4 id="org8d309c0">for-comprehension</h4>
 <ul>
 <li>Syntactic sugar built into the Scala compiler.</li>
 <li>Similar construct (do-notation) exists in Haskell</li>
@@ -532,8 +538,8 @@ def getPOBoxForId(id: String) = for {
 </pre>
 
 </section>
-<section id="slide-orga93202a">
-<h4 id="orga93202a">Laws</h4>
+<section id="slide-orgb8cbfff">
+<h4 id="orgb8cbfff">Laws</h4>
 <p>
 Left Identity
 </p>
@@ -565,8 +571,8 @@ Associativity
 </div>
 
 </section>
-<section id="slide-org1d72ded">
-<h4 id="org1d72ded">Examples</h4>
+<section id="slide-orgd580830">
+<h4 id="orgd580830">Examples</h4>
 <div class="org-src-container">
 
 <pre><code class="scala" >implicit val optionMonad = new Monad[Option] { 
@@ -581,13 +587,13 @@ Associativity
 </section>
 </section>
 <section>
-<section id="slide-org6a15a27">
-<h3 id="org6a15a27">Monads are your friends</h3>
-<div class="outline-text-3" id="text-org6a15a27">
+<section id="slide-org7c3d2cc">
+<h3 id="org7c3d2cc">Monads are your friends</h3>
+<div class="outline-text-3" id="text-org7c3d2cc">
 </div>
 </section>
-<section id="slide-orgdbdf75e">
-<h4 id="orgdbdf75e">Popular Monads</h4>
+<section id="slide-org27869bc">
+<h4 id="org27869bc">Popular Monads</h4>
 <ul>
 <li>Option</li>
 <li>Either</li>
@@ -600,8 +606,8 @@ Associativity
 </ul>
 
 </section>
-<section id="slide-orgca785a6">
-<h4 id="orgca785a6">Reader</h4>
+<section id="slide-org201968d">
+<h4 id="org201968d">Reader</h4>
 <div class="org-src-container">
 
 <pre><code class="scala" >Reader[I, A]
@@ -610,8 +616,8 @@ I => A
 </code></pre>
 </div>
 </section>
-<section id="slide-org01e0281">
-<h4 id="org01e0281">Writer</h4>
+<section id="slide-org95e3a02">
+<h4 id="org95e3a02">Writer</h4>
 <div class="org-src-container">
 
 <pre><code class="scala" >Writer[A]
@@ -621,8 +627,8 @@ A => Unit
 </div>
 
 </section>
-<section id="slide-org0cfe54e">
-<h4 id="org0cfe54e">State</h4>
+<section id="slide-org5bc8f66">
+<h4 id="org5bc8f66">State</h4>
 <div class="org-src-container">
 
 <pre><code class="scala" >State[S, A]
@@ -632,8 +638,8 @@ S => (A, S)
 </div>
 
 </section>
-<section id="slide-orgbf9ea3d">
-<h4 id="orgbf9ea3d">IO</h4>
+<section id="slide-org84d04e4">
+<h4 id="org84d04e4">IO</h4>
 <div class="org-src-container">
 
 <pre><code class="scala" >IO[A]
@@ -646,8 +652,8 @@ for {
 </div>
 
 </section>
-<section id="slide-orgfee60a5">
-<h4 id="orgfee60a5">Stream</h4>
+<section id="slide-orgf08b209">
+<h4 id="orgf08b209">Stream</h4>
 <p>
 (specifically, <code>fs2.Stream</code>)
 </p>
@@ -662,8 +668,8 @@ for {
 </p>
 
 </section>
-<section id="slide-org8ce71e0">
-<h4 id="org8ce71e0">Free</h4>
+<section id="slide-org209cb07">
+<h4 id="org209cb07">Free</h4>
 <p class="fragment">
 More on this later&#x2026; 
 </p>
@@ -671,8 +677,8 @@ More on this later&#x2026;
 </section>
 </section>
 <section>
-<section id="slide-orge3a24d8">
-<h3 id="orge3a24d8">Additional Resources</h3>
+<section id="slide-orga5ca53e">
+<h3 id="orga5ca53e">Additional Resources</h3>
 <ul>
 <li><a href="https://wiki.haskell.org/Typeclassopedia">Typeclassopedia</a></li>
 <li><a href="https://www.manning.com/books/functional-programming-in-scala">Functional Programming in Scala</a></li>
@@ -684,15 +690,15 @@ More on this later&#x2026;
 </section>
 </section>
 <section>
-<section id="slide-orge6419c1">
-<h2 id="orge6419c1">?</h2>
-<div class="outline-text-2" id="text-orge6419c1">
+<section id="slide-org318c477">
+<h2 id="org318c477">?</h2>
+<div class="outline-text-2" id="text-org318c477">
 </div>
 </section>
 </section>
 <section>
-<section id="slide-org0ee9c87">
-<h3 id="org0ee9c87">Thank You!</h3>
+<section id="slide-org2ced1cc">
+<h3 id="org2ced1cc">Thank You!</h3>
 <ul>
 <li>Bill Carlson</li>
 <li><a href="https://twitter.com/coacoas">@coacoas</a></li>

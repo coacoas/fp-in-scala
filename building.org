@@ -167,10 +167,12 @@ optionMonoid[Int].append(Some(3), None) == Some(3)
 
 #+BEGIN_SRC scala
 trait Foldable[F[_]] {
-  def fodlLeft[A, B](a: F[A])(z: B)(f: (B, A) => B): B
+  def foldLeft[A, B](a: F[A])(z: B)(f: (B, A) => B): B
   def foldRight[A, B](a: F[A])(z: B)(f: (A, B) => B): B
   def foldMap[A, B : Monoid](a: F[A])(f: A => B): B = 
-    foldLeft(a)(Monoid[B].empty)((b, a) => Monoid[B].append(b, f(b)))
+    foldLeft(a)(Monoid[B].empty) { (b, a) => 
+      Monoid[B].append(b, f(b))
+    }
 }
 #+END_SRC
 
@@ -304,7 +306,7 @@ trait Applicative[F[_]] extends Apply[F] with  Functor[F] {
 It's really not that scary
 
 *** Monad
-#+BEGIN_SRC 
+#+BEGIN_SRC scala
 trait Monad[F[_]] extends Applicative[F] {
   def flatMap[A, B](a: F[A])(f: A => F[B]): F[B]
 }
@@ -312,7 +314,7 @@ trait Monad[F[_]] extends Applicative[F] {
 
 *** Why? 
 
-#+BEGIN_SRC 
+#+BEGIN_SRC scala
 def getUser(id: String): Option[User]
 def getAddress(user: User): Option[Address]
 

@@ -1,4 +1,5 @@
-#+OPTIONS: num:nil toc:nil reveal_title_slide:nil
+#+OPTIONS: num:nil toc:nil
+#+OPTIONS: reveal_title_slide:"<h1>%t</h1>"
 #+REVEAL_TRANS: slide
 #+REVEAL_THEME: sky
 #+REVEAL_PLUGINS: (highlight notes)
@@ -11,7 +12,7 @@
 ** About Me
 *** Bill Carlson
 *** Cotiviti Labs
-*** The Bungalow
+*** [[https://www.facebook.com/BungalowJax/][The Bungalow]]
 
 ** Last Time in "Functional Programming"
 #+ATTR_REVEAL: :frag t
@@ -31,21 +32,6 @@ The code is simply an interpreter for a particular algebra.  The program is the 
 
 But how do you actually /build/ the program? 
 
-** A Brief Foray Into Category Theory
-
-*** Categories
-
-#+ATTR_REVEAL: :frag (none t)
-- A collection of stuff
-- Types? 
-
-*** Arrows
-
-#+ATTR_REVEAL: :frag (none t)
-- Transformations between categories
-- All categories have an /identity/ arrow
-- Functions? 
-
 * Data Types Revisited
 
 Standard Types
@@ -56,6 +42,54 @@ Higher-Kinded Types
 - ~Option[A]~
 - ~List[A]~
 - ~Either[E, A]~
+
+* Typeclasses
+
+*** Typeclasses
+- Typeclasses are a mechanism to allow for *ad-hoc polymorphism*
+- The typeclass declares an interface
+- THe instance defines the operations
+
+*** Typeclasses allow you to modify behavior of code you don't own.
+
+*** Typeclasses
+#+BEGIN_SRC  scala
+trait Show[A] { 
+  def show(a: A): String
+}
+#+END_SRC
+
+#+ATTR_REVEAL: :frag t
+#+BEGIN_SRC  scala
+implicit val stringShow = new Show[String] {
+  def show(s: String) = s
+}
+#+END_SRC
+
+#+ATTR_REVEAL: :frag t
+#+BEGIN_SRC  scala
+implicit val addressShow = new Show[Address] {
+  def show(addr: Address) = 
+    s"""|${addr.street}
+        |${addr.city} ${addr.state} ${addr.zip}""".stripMargin
+}
+#+END_SRC
+
+*** Typeclasses
+#+BEGIN_SRC scala
+// A polymorphic function that works only when there is an implicit 
+// instance of Show[A] available
+def log[A](a: A)(implicit s: Show[A]) = println(s.show(a))
+#+END_SRC
+
+#+ATTR_REVEAL: :frag t
+#+BEGIN_SRC scala
+object Show { 
+  def apply[A] = implicitly[Show[A]]
+}
+def log[A : Show](a: A) = println(Show[A].show(a))
+#+END_SRC
+
 
 * Algebraic Combinators
 
@@ -113,36 +147,185 @@ optionMonoid[Int].append(Some(3), Some(4)) == Some(7)
 optionMonoid[Int].append(Some(3), None) == Some(3)
 #+END_SRC
 
-*** Sum
-#+BEGIN_SRC scala
-def sum[A : Monoid](as: List[A]): A = {
-  val monoid = implicitly[Monoid[A]]
-  foldLeft(as)(monoid.zero)(monoid.append)
-}
+** Foldable
 
-sum(List(1, 2, 3, 4)) // 10
-sum(List("how", "now", "brown", "cow")  // "hownowbrowncow"
+#+BEGIN_SRC scala
+trait Foldable[F[_]] {
+  def fodlLeft[A, B](a: F[A])(z: B)(f: (B, A) => B): B
+  def foldRight[A, B](a: F[A])(z: B)(f: (A, B) => B): B
+  def foldMap[A, B : Monoid](a: F[A])(f: A => B): B = 
+    foldLeft(a)(Monoid[B].empty)((b, a) => Monoid[B].append(b, f(b)))
+}
+#+END_SRC
+
+*** Combine
+#+BEGIN_SRC scala
+def combine[F[_], A : Monoid](a: F[A]): A = 
+  Foldable[F].foldMap(a)(identity)
+
+combine(List(1, 2, 3, 4)) // 10
+combine(List("how", "now", "brown", "cow")  // "hownowbrowncow"
+#+END_SRC
+
+*** Count
+#+BEGIN_SRC scala
+def count[F[_], A : Monoid](a: F[A]): A = 
+  Foldable[F].foldMap(a)(_ => 1)
+
+count(Some(4)) // 1
+count(None)    // 0
+count(List(1,2,3,4)) // 4
 #+END_SRC
 
 
 ** Functor
 
+#+BEGIN_SRC scala
+trait Functor[F[_]] { 
+  def map[A, B](a: F[A], f: A => B): F[B]
+}
+#+END_SRC
+
+*** Which means? 
+
+~map~ allows you to modify the values within a context without modifying the shape of the context
+
+*** What does /that/ mean? 
+
+#+BEGIN_SRC scala
+Functor[Option].map(Some(4), (_: Int) * 2) === Some(8)
+Functor[Option].map(None, (_: Int) * 2) === None
+#+END_SRC
+#+BEGIN_SRC scala
+Functor[List].map(List(1, 2, 3, 4), (_: Int) * 2) === List(2, 4, 6, 8)
+Functor[List].map(List.empty[Int], (_: Int) * 2) === List()
+#+END_SRC
+
 ** Applicative
+
+#+ATTR_REVEAL: :frag t
+
+Because not every function has one argument... 
+
+#+REVEAL: split
+
+What happens if you have a function 
+#+BEGIN_SRC scala
+f: (A, B) => C
+#+END_SRC
+
+#+ATTR_REVEAL: :frag t
+#+BEGIN_SRC scala
+Functor[Option].map(Some(3), f)
+// error: type mismatch;
+//  found   : (Int, Int) => Int
+//  required: Int => ?
+#+END_SRC
+
+#+REVEAL: split
+
+#+BEGIN_SRC scala
+f.curried // (a: Int) => (b: Int) => f(a, b)
+#+END_SRC
+
+#+ATTR_REVEAL: :frag t
+#+BEGIN_SRC scala
+Functor[Option].map(Some(3), f.curried)
+// Some[Int => Int]
+#+END_SRC
+
+*** Applicative
+
+#+BEGIN_SRC scala
+trait Applicative[F[_]] { 
+  def ap[A, B](a: F[A], b: F[A => B]): F[B]
+}
+#+END_SRC
+
+#+ATTR_REVEAL: :frag t
+#+BEGIN_SRC scala
+val sum: (a: Int, b: Int) => a + b
+val fOption: Option[Int => Int] = Functor[Option].map(Some(3), sum.curried)
+
+Appicative[Option].ap(Some(4), fOption) === Some(7)
+#+END_SRC
+
+*** Extensions
+
+#+BEGIN_SRC scala
+trait Applicative[F[_]] extends Functor[F] { 
+  def pure[A](a: A): F[A]
+
+  def ap[A, B](a: F[A], b: F[A => B]): F[B]
+
+  def map2[A, B, C](
+    a: F[A], 
+    b: F[B], 
+    c: (A, B) => C): F[C] = 
+    ap(b, Fucntor[A].map(a, c.curried))
+}
+#+END_SRC
 
 ** Monad
 
-* Composition
+*** Monad
 
-** Function
+It's really not that scary
 
-** Functor
+*** Monad
+#+BEGIN_SRC 
+trait Monad[F[_]] extends Applicative[F] {
+  def flatMap[A, B](a: F[A])(f: A => F[B]): F[B]
+}
+#+END_SRC
 
-** Applicative
+*** Why? 
 
-** Monad
+#+BEGIN_SRC 
+def getUser(id: String): Option[User]
+def getAddress(user: User): Option[Address]
+
+def getAddressForId(id: Sting) = 
+  getUser(id).flatMap { user => 
+    getAddress(user)
+  }
+
+#+END_SRC
 
 #+ATTR_REVEAL: :frag t
-(?)
+This gets ugly really fast. 
 
-#+ATTR_REVEAL: :frag t
-Monads do not generically compose
+*** for-comprehension
+
+- Syntactic sugar built into the Scala compiler. 
+- Similar construct (do-notation) exists in Haskell
+#+BEGIN_SRC 
+  def getPOBoxForId(id: String) = for { 
+    user    <- getUser(id)
+    address <- getAddress(user)
+    pobox   <- getPOBox(address)
+  } yield address
+#+END_SRC
+
+*** Examples
+#+BEGIN_SRC 
+  implicit val optionMonad = new Monad[Option] { 
+    def flatMap[A, B](a: Option[A])(f: A => Option[B]) = a match { 
+      case None => None
+      case Some(x) => f(x)
+    }
+  }
+#+END_SRC
+
+** Additional Resources
+- [[https://wiki.haskell.org/Typeclassopedia][Typeclassopedia]]
+- [[https://www.manning.com/books/functional-programming-in-scala][Functional Programming in Scala]]
+- [[http://learnyouahaskell.com/][Learn You A Haskell For Great Good]]
+- [[http://eed3si9n.com/learning-scalaz/index.html][Learning Scalaz]]/[[http://eed3si9n.com/herding-cats/][Herding Cats]]
+
+* ? 
+
+** Thank You!
+
+- Bill Carlson
+- [[https://twitter.com/coacoas][@coacoas]]

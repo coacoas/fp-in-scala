@@ -13,6 +13,7 @@
 *** Bill Carlson
 *** Cotiviti Labs
 *** [[https://www.facebook.com/BungalowJax/][The Bungalow]]
+#+REVEAL_HTML: <img src="bungalow.png" width="400"/>
 
 ** Last Time in "Functional Programming"
 #+ATTR_REVEAL: :frag t
@@ -129,6 +130,21 @@ val multiplicationMonoid = new Monoid[Int] {
 }
 #+END_SRC
 
+*** Laws
+
+Right Identity
+#+BEGIN_SRC scala
+append(a, zero) == a  
+#+END_SRC
+Left Identity
+#+BEGIN_SRC scala
+append(zero, a) == a
+#+END_SRC
+Associativity
+#+BEGIN_SRC scala
+append(a, append(b, c)) === append(append(a, b), c)
+#+END_SRC
+
 *** Option
 
 #+BEGIN_SRC scala
@@ -201,6 +217,20 @@ Functor[List].map(List(1, 2, 3, 4), (_: Int) * 2) === List(2, 4, 6, 8)
 Functor[List].map(List.empty[Int], (_: Int) * 2) === List()
 #+END_SRC
 
+*** Laws
+Identity
+#+BEGIN_SRC scala
+F.map(a)(identity) == a
+#+END_SRC
+Composition
+#+BEGIN_SRC scala
+F.map(F.map(a)(f))(g) == F.map(a)(f compose g)
+#+END_SRC
+#+ATTR_REVEAL: :frag t
+#+BEGIN_SRC scala
+a.map(f).map(g) == a.map(f andThen g)
+#+END_SRC
+
 ** Applicative
 
 #+ATTR_REVEAL: :frag t
@@ -237,26 +267,27 @@ Functor[Option].map(Some(3), f.curried)
 *** Applicative
 
 #+BEGIN_SRC scala
-trait Applicative[F[_]] { 
+trait Apply[F[_]] { 
   def ap[A, B](a: F[A], b: F[A => B]): F[B]
 }
 #+END_SRC
 
 #+ATTR_REVEAL: :frag t
 #+BEGIN_SRC scala
-val sum: (a: Int, b: Int) => a + b
+val sum = (a: Int, b: Int) => a + b
 val fOption: Option[Int => Int] = Functor[Option].map(Some(3), sum.curried)
 
-Appicative[Option].ap(Some(4), fOption) === Some(7)
+Applicative[Option].ap(Some(4), fOption)
+// res4: Option[Int] = Some(7)
+
+Some(4) <*> fOption 
 #+END_SRC
 
 *** Extensions
 
 #+BEGIN_SRC scala
-trait Applicative[F[_]] extends Functor[F] { 
+trait Applicative[F[_]] extends Apply[F] with  Functor[F] { 
   def pure[A](a: A): F[A]
-
-  def ap[A, B](a: F[A], b: F[A => B]): F[B]
 
   def map2[A, B, C](
     a: F[A], 
@@ -307,8 +338,26 @@ This gets ugly really fast.
   } yield address
 #+END_SRC
 
+*** Laws
+Left Identity
+#+BEGIN_SRC scala
+pure(a).flatMap(f) == f(a)
+#+END_SRC
+Right Identity
+#+BEGIN_SRC scala
+m.flatMap(pure) == m
+#+END_SRC
+Associativity
+#+BEGIN_SRC scala
+flatMap(flatMap(m)(f))(g) == flatMap(m)(x => flatMap(f(x))(g))
+#+END_SRC
+#+ATTR_REVEAL: :frag t
+#+BEGIN_SRC scala
+(m >>= f) >>= g == m >>= (x => f(x) >>= g)
+#+END_SRC
+
 *** Examples
-#+BEGIN_SRC 
+#+BEGIN_SRC scala
   implicit val optionMonad = new Monad[Option] { 
     def flatMap[A, B](a: Option[A])(f: A => Option[B]) = a match { 
       case None => None
@@ -316,6 +365,57 @@ This gets ugly really fast.
     }
   }
 #+END_SRC
+
+** Monads are your friends
+
+*** Popular Monads
+- Option
+- Either
+- List
+#+ATTR_REVEAL: :frag t
+- But wait! There's more!
+
+*** Reader
+#+BEGIN_SRC scala
+Reader[I, A]
+
+I => A
+#+END_SRC
+*** Writer
+#+BEGIN_SRC scala
+Writer[A]
+
+A => Unit
+#+END_SRC
+
+*** State
+#+BEGIN_SRC scala
+State[S, A]
+
+S => (A, S)
+#+END_SRC
+
+*** IO
+#+BEGIN_SRC scala
+IO[A]
+
+for { 
+  name <- IO { readLine("What is your name?") }
+  _    <- IO { print(s"Hello, $name") }
+} yield ()
+#+END_SRC
+
+*** Stream
+(specifically, ~fs2.Stream~)
+#+BEGIN_SRC scala
+Stream[F[_], A]
+#+END_SRC
+
+https://github.com/functional-streams-for-scala/fs2
+
+*** Free
+#+ATTR_REVEAL: :frag t
+More on this later... 
 
 ** Additional Resources
 - [[https://wiki.haskell.org/Typeclassopedia][Typeclassopedia]]

@@ -1,0 +1,684 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<title>The Desert of the Real</title>
+<meta name="author" content="(Bill Carlson)"/>
+<style type="text/css">
+.underline { text-decoration: underline; }
+</style>
+<link rel="stylesheet" href="./reveal.js/css/reveal.css"/>
+
+<link rel="stylesheet" href="./reveal.js/css/theme/sky.css" id="theme"/>
+
+<link rel="stylesheet" href="./reveal.js/lib/css/zenburn.css"/>
+<!-- If the query includes 'print-pdf', include the PDF print sheet -->
+<script>
+    if( window.location.search.match( /print-pdf/gi ) ) {
+        var link = document.createElement( 'link' );
+        link.rel = 'stylesheet';
+        link.type = 'text/css';
+        link.href = './reveal.js/css/print/pdf.css';
+        document.getElementsByTagName( 'head' )[0].appendChild( link );
+    }
+</script>
+</head>
+<body>
+<div class="reveal">
+<div class="slides">
+<section id="sec-title-slide"><h1>The Desert of the Real</h1>
+</section>
+
+</section>
+</section>
+<section>
+<section id="slide-orgbc069c0">
+<h3 id="orgbc069c0">About Me</h3>
+<ul>
+<li>Bill Carlson</li>
+<li>Innovation Developer at Cotiviti Labs</li>
+<li>Pretty much anywhere: @coacoas</li>
+
+</ul>
+
+</section>
+</section>
+<section>
+<section id="slide-org9d80eaf">
+<h3 id="org9d80eaf">Previously in "Functional Programming"</h3>
+<ul>
+<li>Programming with functions</li>
+<li>Referential transparency</li>
+
+</ul>
+
+</section>
+<section id="slide-org6d40445">
+<h4 id="org6d40445">Programming with FUnctions</h4>
+<ul>
+<li>A program is <i>evaluated</i> by repeated substitution of function calls with the values they represent.</li>
+
+<li>The code is simply an interpreter for a particular algebra.  The program is the data that gets evaluated.</li>
+
+</ul>
+
+</section>
+<section id="slide-orge7a3c32">
+<h4 id="orge7a3c32">Building the Program</h4>
+<p>
+Use combinators to build the interpreter
+</p>
+
+<ul>
+<li>Monoid</li>
+<li>Functor</li>
+<li>Applicative</li>
+<li>Monad</li>
+
+</ul>
+
+</section>
+</section>
+<section>
+<section id="slide-org964a361">
+<h3 id="org964a361">But wait&#x2026;</h3>
+<p class="fragment">
+Input is not allowed
+</p>
+<p class="fragment">
+Output is not allowed
+</p>
+<p class="fragment">
+So every program <i>must</i> an evaluation from 
+</p>
+<div class="org-src-container">
+
+<pre class="fragment"><code class="scala" >() => ()
+</code></pre>
+</div>
+
+<aside class="notes">
+<p>
+Because of referential transparency, we cannot create anything that reads from the outside world. It may be destructive. It may error. We don't know. 
+Because of referential transparency, we cannot write anything to the outside world because, well&#x2026; that may mean affecting the real world multiple times. It may error. We don't know. 
+</p>
+
+</aside>
+
+</section>
+</section>
+<section>
+<section id="slide-orgaece914">
+<h2 id="orgaece914">?</h2>
+<p class="fragment">
+(just kidding)
+</p>
+
+</section>
+</section>
+<section>
+<section id="slide-orgd9dbed3">
+<h3 id="orgd9dbed3">Effects</h3>
+<div class="outline-text-3" id="text-orgd9dbed3">
+</div>
+</section>
+<section id="slide-org3b4352a">
+<h4 id="org3b4352a">Side Effects</h4>
+<ul>
+<li><i>Not</i> what we want</li>
+<li>Refers to things changing in the world
+<ul>
+<li>Files</li>
+<li>Console</li>
+<li>Exceptions</li>
+<li>Database</li>
+<li>And much, much more&#x2026;</li>
+
+</ul></li>
+
+</ul>
+
+</section>
+<section id="slide-org6d0d63a">
+<h4 id="org6d0d63a">Push 'em</h4>
+<ul>
+<li>Keep functions pure</li>
+<li>Any effects should be pushed out to the end of the universe</li>
+
+</ul>
+
+</section>
+<section id="slide-org1909752">
+<h4 id="org1909752">Push 'em real good</h4>
+<div class="org-src-container">
+
+<pre><code class="scala" >def buy(item: Item, price: Int, count: Int, card: CreditCard): Unit = {
+  val amount = item * count * price
+  creditCard.charge(amount)
+}
+</code></pre>
+</div>
+<p>
+Becomes&#x2026;
+</p>
+<div class="org-src-container">
+
+<pre><code class="scala" >def buy(item: Item, price: Int, count: Int): Charge = 
+  new Charge(item * count * price)
+</code></pre>
+</div>
+
+</section>
+<section >
+<p>
+But you still have to do the work at some point.
+</p>
+
+</section>
+</section>
+<section>
+<section id="slide-orgc5da64b">
+<h2 id="orgc5da64b">Milliways</h2>
+<div class="outline-text-2" id="text-orgc5da64b">
+</div>
+</section>
+<section id="slide-org5966756">
+<h4 id="org5966756">Effect Types</h4>
+
+</section>
+<section id="slide-org74850a4">
+<h4 id="org74850a4">IO</h4>
+<p>
+Stepping into Haskell&#x2026; 
+</p>
+<div class="org-src-container">
+
+<pre><code class="haskell" >module Main where
+
+main :: IO ()
+main = putStrLn "Hello, World"
+</code></pre>
+</div>
+
+<p>
+What does <code>IO ()</code> mean? 
+</p>
+
+</section>
+<section id="slide-org158d59a">
+<h4 id="org158d59a">IO</h4>
+<ul>
+<li>Indicates a potentially impure process</li>
+<li>Becomes pure by suspending execution</li>
+<li>Can be combined using monadic operations</li>
+
+</ul>
+
+</section>
+<section id="slide-org4206ddb">
+<h4 id="org4206ddb">Back to Scala</h4>
+<ul>
+<li><a href="http://timperrett.com/2014/07/20/scalaz-task-the-missing-documentation/"><code>scalaz.concurrent.Task</code></a></li>
+<li><a href="https://github.com/typelevel/cats-effect"><code>cats.effect.IO</code></a></li>
+
+</ul>
+
+</section>
+<section id="slide-org7798772">
+<h4 id="org7798772">Here's the problem</h4>
+<div class="org-src-container">
+
+<pre><code class="scala" >object Main {
+  def main(args: Array[String]): Unit = ???
+}
+</code></pre>
+</div>
+
+</section>
+<section id="slide-orga95a813">
+<h4 id="orga95a813">Be Excplicit</h4>
+<div class="org-src-container">
+
+<pre><code class="scala" >object Main {
+  import cats.effect.IO
+
+  def main(args: Array[String]): Unit = {
+    val io: IO[Unit] = mainIO(args)
+    io.unsafeRunSync()
+  }
+
+  def mainIO(args: Array[String]): IO[Unit] = IO {
+    println("Hello, Jax.Ex!")
+  }
+}
+</code></pre>
+</div>
+
+</section>
+<section id="slide-orgc8d3a21">
+<h4 id="orgc8d3a21">NOT Side Effects</h4>
+<ul>
+<li>A side effect is an operation that happens behind the scenes</li>
+<li>IO turns side effects into documented effects</li>
+<li>ONLY run `unsafeRunSync` at the end of the main program.
+<ul>
+<li>Nowhere else!</li>
+
+</ul></li>
+
+</ul>
+
+</section>
+<section id="slide-orga419fe5">
+<h4 id="orga419fe5">This sounds awesome</h4>
+
+</section>
+<section id="slide-orgd7e501c">
+<h4 id="orgd7e501c">But not quite</h4>
+<ul>
+<li>Testing can be difficult</li>
+<li>Combinators generating just `IO` loses track of the API</li>
+
+</ul>
+
+</section>
+</section>
+<section>
+<section id="slide-org162faf8">
+<h2 id="org162faf8">Is there a better way?</h2>
+<div class="outline-text-2" id="text-org162faf8">
+</div>
+</section>
+</section>
+<section>
+<section id="slide-orgdfb4dc7">
+<h3 id="orgdfb4dc7">Thrifty Monads</h3>
+<p class="fragment">
+Time to code - and derive the <code>Free</code> Monad
+</p>
+
+</section>
+</section>
+<section>
+<section id="slide-orgc87252b">
+<h3 id="orgc87252b">What can it be used for?</h3>
+<div class="outline-text-3" id="text-orgc87252b">
+</div>
+</section>
+<section id="slide-org8e15893">
+<h4 id="org8e15893">Define Your Algebra</h4>
+<div class="org-src-container">
+
+<pre><code class="scala" >sealed trait Console[A]
+final case object ReadLine extends Console[String]
+final case class WriteLine(s: String) extends Console[Unit]
+</code></pre>
+</div>
+
+</section>
+<section id="slide-org05f2aef">
+<h4 id="org05f2aef">Lift to the Free Context</h4>
+<div class="org-src-container">
+
+<pre><code class="scala" >object ConsoleOps {
+  type ConsoleF[A] = Free[Console, A]
+
+  def readLine: ConsoleF[String] = Free.liftF(ReadLine)
+  def writeLine(s: String): ConsoleF[Unit] = Free.liftF(WriteLine(s))
+}
+</code></pre>
+</div>
+
+</section>
+<section id="slide-org5af2f9f">
+<h4 id="org5af2f9f">Create your program</h4>
+<div class="org-src-container">
+
+<pre><code class="scala" >object ConsoleApp {
+  import ConsoleOps._
+
+  val app: ConsoleF[Unit] = for {
+    _    <- writeLine(s"Please enter your name:")
+    name <- readLine
+    _    <- writeLine(s"Hello, $name!")
+  } yield ()
+}
+</code></pre>
+</div>
+
+</section>
+</section>
+<section>
+<section id="slide-orgc8871f7">
+<h3 id="orgc8871f7">Step back</h3>
+<div class="outline-text-3" id="text-orgc8871f7">
+</div>
+</section>
+<section id="slide-orgb78f664">
+<h4 id="orgb78f664">What have we done at this point?</h4>
+<ul>
+<li>Generate an algebra</li>
+<li>Built an AST using Monadic combinators</li>
+<li><span class="underline">Nothing else</span></li>
+
+</ul>
+
+</section>
+<section id="slide-org730092c">
+<h4 id="org730092c">What have we done at this point?</h4>
+<ul>
+<li>We have created an AST.</li>
+
+</ul>
+
+</section>
+<section id="slide-orge7ba03a">
+<h4 id="orge7ba03a">What <i>can</i> we do at this point?</h4>
+<ul>
+<li>Inspect the AST</li>
+<li>Convert to another type (see <code>NaturalTransformation</code>)</li>
+
+</ul>
+
+</section>
+</section>
+<section>
+<section id="slide-org588cf31">
+<h3 id="org588cf31">Natural Transformations</h3>
+<div class="outline-text-3" id="text-org588cf31">
+</div>
+</section>
+<section id="slide-orgba7420e">
+<h4 id="orgba7420e">F[_] ~&gt; G[_]</h4>
+<div class="org-src-container">
+
+<pre><code class="scala" >trait ~>[F[_], G[_]] { 
+  def apply[A](F[A]): G[A]
+}
+</code></pre>
+</div>
+<p class="fragment">
+Note that <code>G[_]</code> can be <i>another</i> <code>Free</code> implementation!
+</p>
+<p class="fragment">
+But it can also be the end of the universe
+</p>
+
+</section>
+<section id="slide-orgfd1ea11">
+<h4 id="orgfd1ea11">Console ~&gt; IO</h4>
+<div class="org-src-container">
+
+<pre><code class="scala" >object ConsoleIO extends (Console ~> IO) {
+  def apply[A](c: Console[A]): IO[A] = c match {
+    case ReadLine => IO { readLine() }
+    case WriteLine(s) => IO { println(s) }
+  }
+}
+</code></pre>
+</div>
+
+</section>
+</section>
+<section>
+<section id="slide-org6a81223">
+<h3 id="org6a81223">Run it all</h3>
+<div class="org-src-container">
+
+<pre><code class="scala" >def main(args: Array[String]) = app.foldMap(ConsoleIO).unsafeRunSync()
+</code></pre>
+</div>
+
+</section>
+</section>
+<section>
+<section id="slide-org1e3f558">
+<h3 id="org1e3f558">What about Testing?</h3>
+<div class="outline-text-3" id="text-org1e3f558">
+</div>
+</section>
+<section id="slide-orgd7ca2cf">
+<h4 id="orgd7ca2cf">Console ~&gt; State</h4>
+<div class="org-src-container">
+
+<pre><code class="scala" >case class InOut(in: List[String], out: Vector[String])
+object ConsoleState extends (Console ~> State[InOut, ?]) {
+  def apply[A](c: Console[A]): State[InOut, A] =
+    c match {
+      case ReadLine => State {
+        case InOut(in, out) => InOut(in.tail, out) -> in.head
+      }
+      case WriteLine(s) => State.modify {
+        case InOut(in, out) => InOut(in, out :+ s)
+      }
+    }
+}
+</code></pre>
+</div>
+
+</section>
+<section id="slide-orgb405e03">
+<h4 id="orgb405e03">Console ~&gt; State</h4>
+<div class="org-src-container">
+
+<pre><code class="scala" >class ConsoleTest extends FlatSpec with Matchers {
+  "Console" should "read and write" in {
+    val in = List("Jax.Ex")
+    val out = Vector.empty[String]
+    val expected = Vector(
+      "Please enter your name:",
+      "Hello, Jax.Ex!"
+    )
+
+    val (io, _) = ConsoleApp.app.foldMap(ConsoleState).run(InOut(in, out)).value
+    io.out should equal(expected)
+  }
+}
+</code></pre>
+</div>
+
+</section>
+</section>
+<section>
+<section id="slide-org74f9563">
+<h2 id="org74f9563">Combining Algebras</h2>
+</section>
+<section >
+<p>
+Bear with me. This is where it gets <i>really</i> cool.
+</p>
+
+</section>
+</section>
+<section>
+<section id="slide-org91da8d5">
+<h3 id="org91da8d5">Combining Algebras</h3>
+<ul>
+<li>Introduce a new algebra</li>
+
+</ul>
+<div class="org-src-container">
+
+<pre><code class="scala" >sealed trait Logo[A]
+case class Up(p: Position, distance: Int) extends Logo[Position]
+case class Down(p: Position, distance: Int) extends Logo[Position]
+case class Left(p: Position, distance: Int) extends Logo[Position]
+case class Right(p: Position, distance: Int) extends Logo[Position]
+</code></pre>
+</div>
+</section>
+</section>
+<section>
+<section id="slide-org1f1db8b">
+<h3 id="org1f1db8b">Coproduct/EitherK</h3>
+<div class="org-src-container">
+
+<pre><code class="scala" >// Typically seen as Coproduct[F, G, A] in the literature
+class EitherK[F, G, A]
+
+type ConsoleLogo[A] = EitherK[Console, Logo, A]
+</code></pre>
+</div>
+
+</section>
+</section>
+<section>
+<section id="slide-org703930f">
+<h3 id="org703930f">Injection</h3>
+<p>
+Lift the algebra to the <code>Free</code> context
+</p>
+<div class="org-src-container">
+
+<pre><code class="scala" >class LogoInject[F[_]](implicit I: InjectK[Logo, F]) {
+  def up(p: Position, distance: Int): Free[F, Position] = Free.inject[Logo, F](Up(p, distance))
+  def down(p: Position, distance: Int): Free[F, Position] = Free.inject[Logo, F](Down(p, distance))
+  def left(p: Position, distance: Int): Free[F, Position] = Free.inject[Logo, F](Left(p, distance))
+  def right(p: Position, distance: Int): Free[F, Position] = Free.inject[Logo, F](Right(p, distance))
+}
+</code></pre>
+</div>
+
+</section>
+</section>
+<section>
+<section id="slide-org9e90754">
+<h3 id="org9e90754">Create the combined program</h3>
+<div class="org-src-container">
+
+<pre><code class="scala" >def program(implicit C: ConsoleInject[ConsoleLogo], L: LogoInject[ConsoleLogo]): Free[ConsoleLogo, Unit] = {
+  import C._, L._
+
+  val p0 = Position(30, 30)
+  for {
+    _  <- writeLine(s"Starting at: $p0")
+    p1 <- up(p0, 10)
+    _  <- writeLine(s"Position: $p1")
+    p2 <- down(p1, 15)
+    _  <- writeLine(s"Position: $p2")
+    p3 <- left(p2, 34)
+    _  <- writeLine(s"Position: $p3")
+    p4 <- right(p3, 18)
+    _  <- writeLine(s"Position: $p4")
+  } yield ()
+}
+</code></pre>
+</div>
+
+</section>
+</section>
+<section>
+<section id="slide-orge09ac8a">
+<h3 id="orge09ac8a">Generate the Interpreter</h3>
+<div class="org-src-container">
+
+<pre><code class="scala" >def main(args: Array[String]) = {
+  val interpreter = ConsoleIO or LogoIO
+  program.foldMap(interpreter).unsafeRunSync
+}
+</code></pre>
+</div>
+
+</section>
+</section>
+<section>
+<section id="slide-org1a11df4">
+<h2 id="org1a11df4">Ugh</h2>
+<div class="outline-text-2" id="text-org1a11df4">
+</div>
+</section>
+</section>
+<section>
+<section id="slide-orgcf76d2a">
+<h3 id="orgcf76d2a">So much boilerplate!</h3>
+<ul>
+<li>Yeah, that's true&#x2026;</li>
+<li>It's a lot less than having to write the same code over and over again!</li>
+<li>And it's a simple pattern that gets repeated over and over</li>
+
+</ul>
+
+</section>
+<section >
+<p>
+So, if it's the same pattern, it can be abstracted, right? 
+</p>
+<p class="fragment">
+AMcros!
+</p>
+
+</section>
+</section>
+<section>
+<section id="slide-orgdc4008f">
+<h3 id="orgdc4008f">frees</h3>
+<p>
+<a href="http://frees.io">http://frees.io</a>
+</p>
+
+</section>
+</section>
+<section>
+<section id="slide-org09f970b">
+<h2 id="org09f970b">Benefits</h2>
+<ul>
+<li>Clean separation of algebras</li>
+<li>Easily combine algebras</li>
+<li>Stack-safe (Trampolining)</li>
+
+</ul>
+
+</section>
+</section>
+<section>
+<section id="slide-orgd92428c">
+<h2 id="orgd92428c">Drawbacks</h2>
+<ul>
+<li><code>Monad</code></li>
+<li>Performance</li>
+
+</ul>
+
+</section>
+</section>
+<section>
+<section id="slide-org7b01891">
+<h2 id="org7b01891">?</h2>
+</section>
+</section>
+</div>
+</div>
+<script src="./reveal.js/lib/js/head.min.js"></script>
+<script src="./reveal.js/js/reveal.js"></script>
+
+<script>
+// Full list of configuration options available here:
+// https://github.com/hakimel/reveal.js#configuration
+Reveal.initialize({
+
+controls: true,
+progress: true,
+history: false,
+center: true,
+slideNumber: 'c',
+rollingLinks: false,
+keyboard: true,
+overview: true,
+
+theme: Reveal.getQueryHash().theme, // available themes are in /css/theme
+transition: Reveal.getQueryHash().transition || 'slide', // default/cube/page/concave/zoom/linear/fade/none
+transitionSpeed: 'default',
+multiplex: {
+    secret: '', // null if client
+    id: '', // id, obtained from socket.io server
+    url: '' // Location of socket.io server
+},
+
+// Optional libraries used to extend on reveal.js
+dependencies: [
+ { src: './reveal.js/plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } },
+ { src: './reveal.js/plugin/notes/notes.js', async: true, condition: function() { return !!document.body.classList; } }]
+});
+</script>
+</body>
+</html>

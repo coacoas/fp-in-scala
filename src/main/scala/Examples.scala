@@ -46,6 +46,14 @@ object Examples {
   def mkString(xs: List[Int]): String = foldLeft(xs, "")(_ + _.toString)
   def reverse[A](xs: List[A]): List[A] = foldLeft(xs, List.empty[A]) { (acc, i) => i :: acc }
 
+  def filter[A](xs: List[A], f: Predicate[A]) =
+    reverse {
+      foldLeft(xs, List.empty[A]) { (acc, value) =>
+        if (f(value)) value :: acc
+        else acc
+      }
+    }
+
   def map[A, B](xs: List[A])(f: A => B): List[B] = foldRight(xs, List.empty[B]) { (i, acc) => f(i) :: acc }
   def mapl[A, B](xs: List[A])(f: A => B): List[B] =
     reverse(foldLeft(xs, List.empty[B]) { (acc, i) => f(i) :: acc })

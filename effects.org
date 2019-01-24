@@ -1,0 +1,358 @@
+#+OPTIONS: num:nil toc:nil
+#+OPTIONS: reveal_title_slide:"<h1>%t</h1>"
+#+REVEAL_TRANS: slide
+#+REVEAL_THEME: sky
+#+REVEAL_PLUGINS: (highlight notes)
+#+REVEAL_HLEVEL: 2
+
+#+Title: The Desert of the Real
+#+Subtitle: 
+#+Author: Bill Carlson
+#+Email: bill@coacoas.net
+
+** About Me
+
+- Bill Carlson
+- Innovation Developer at Cotiviti Labs
+- Pretty much anywhere: @coacoas
+
+** Previously in "Functional Programming"
+- Programming with functions
+- Referential transparency
+
+*** Programming with FUnctions
+
+- A program is /evaluated/ by repeated substitution of function calls with the values they represent. 
+
+- The code is simply an interpreter for a particular algebra.  The program is the data that gets evaluated. 
+
+*** Building the Program
+
+Use combinators to build the interpreter
+
+- Monoid
+- Functor
+- Applicative
+- Monad
+
+** But wait... 
+
+#+ATTR_REVEAL: :frag t
+Input is not allowed
+#+ATTR_REVEAL: :frag t
+Output is not allowed
+#+ATTR_REVEAL: :frag t
+So every program /must/ an evaluation from 
+#+ATTR_REVEAL: :frag t
+#+BEGIN_SRC scala
+() => ()
+#+END_SRC
+
+#+BEGIN_NOTES
+Because of referential transparency, we cannot create anything that reads from the outside world. It may be destructive. It may error. We don't know. 
+Because of referential transparency, we cannot write anything to the outside world because, well... that may mean affecting the real world multiple times. It may error. We don't know. 
+#+END_NOTES
+
+* ? 
+
+#+ATTR_REVEAL: :frag t
+(just kidding)
+
+** Effects
+
+*** Side Effects
+- /Not/ what we want
+- Refers to things changing in the world
+  - Files
+  - Console
+  - Exceptions
+  - Database
+  - And much, much more...
+
+*** Push 'em
+
+- Keep functions pure
+- Any effects should be pushed out to the end of the universe
+
+*** Push 'em real good
+
+#+BEGIN_SRC scala
+def buy(item: Item, price: Int, count: Int, card: CreditCard): Unit = {
+  val amount = item * count * price
+  creditCard.charge(amount)
+}
+#+END_SRC
+Becomes...
+#+BEGIN_SRC scala
+def buy(item: Item, price: Int, count: Int): Charge = 
+  new Charge(item * count * price)
+#+END_SRC
+
+#+REVEAL: split
+But you still have to do the work at some point.
+
+* Milliways
+
+** Effect Types
+
+*** IO
+Stepping into Haskell... 
+#+BEGIN_SRC haskell
+module Main where
+
+main :: IO ()
+main = putStrLn "Hello, World"
+#+END_SRC
+
+What does ~IO ()~ mean? 
+
+*** IO
+
+- Indicates a potentially impure process
+- Becomes pure by suspending execution
+- Can be combined using monadic operations
+
+*** Back to Scala
+
+- [[http://timperrett.com/2014/07/20/scalaz-task-the-missing-documentation/][~scalaz.concurrent.Task~]]
+- [[https://github.com/typelevel/cats-effect][~cats.effect.IO~]]
+
+*** Here's the problem
+#+BEGIN_SRC scala
+object Main {
+  def main(args: Array[String]): Unit = ???
+}
+#+END_SRC
+
+*** Be Excplicit
+
+#+BEGIN_SRC scala
+object Main {
+  import cats.effect.IO
+
+  def main(args: Array[String]): Unit = {
+    val io: IO[Unit] = mainIO(args)
+    io.unsafeRunSync()
+  }
+
+  def mainIO(args: Array[String]): IO[Unit] = IO {
+    println("Hello, Jax.Ex!")
+  }
+}
+#+END_SRC
+
+*** NOT Side Effects
+
+- A side effect is an operation that happens behind the scenes
+- IO turns side effects into documented effects
+- ONLY run `unsafeRunSync` at the end of the main program.
+  - Nowhere else!
+
+*** This sounds awesome
+
+*** But not quite
+- Testing can be difficult
+- Combinators generating just `IO` loses track of the API
+
+* Is there a better way? 
+
+** Thrifty Monads
+#+ATTR_REVEAL: :frag t
+Time to code - and derive the ~Free~ Monad
+
+** What can it be used for? 
+
+*** Define Your Algebra
+#+BEGIN_SRC scala
+sealed trait Console[A]
+final case object ReadLine extends Console[String]
+final case class WriteLine(s: String) extends Console[Unit]
+#+END_SRC
+
+*** Lift to the Free Context
+#+BEGIN_SRC scala
+object ConsoleOps {
+  type ConsoleF[A] = Free[Console, A]
+
+  def readLine: ConsoleF[String] = Free.liftF(ReadLine)
+  def writeLine(s: String): ConsoleF[Unit] = Free.liftF(WriteLine(s))
+}
+#+END_SRC
+
+*** Create your program
+#+BEGIN_SRC scala
+object ConsoleApp {
+  import ConsoleOps._
+
+  val app: ConsoleF[Unit] = for {
+    _    <- writeLine(s"Please enter your name:")
+    name <- readLine
+    _    <- writeLine(s"Hello, $name!")
+  } yield ()
+}
+#+END_SRC
+
+** Step back
+
+*** What have we done at this point? 
+#+ATTR_REVEAL: (:frag t)
+- Generate an algebra
+- Built an AST using Monadic combinators
+- _Nothing else_
+
+*** What have we done at this point? 
+- We have created an AST.
+
+*** What /can/ we do at this point? 
+- Inspect the AST
+- Convert to another type (see ~NaturalTransformation~)
+
+** Natural Transformations
+
+*** F[_] ~> G[_]
+#+BEGIN_SRC scala
+trait ~>[F[_], G[_]] { 
+  def apply[A](F[A]): G[A]
+}
+#+END_SRC
+#+ATTR_REVEAL: :frag t
+Note that ~G[_]~ can be /another/ ~Free~ implementation!
+#+ATTR_REVEAL: :frag t
+But it can also be the end of the universe
+
+*** Console ~> IO
+#+BEGIN_SRC scala
+object ConsoleIO extends (Console ~> IO) {
+  def apply[A](c: Console[A]): IO[A] = c match {
+    case ReadLine => IO { readLine() }
+    case WriteLine(s) => IO { println(s) }
+  }
+}
+#+END_SRC
+
+** Run it all 
+#+BEGIN_SRC scala
+def main(args: Array[String]) = app.foldMap(ConsoleIO).unsafeRunSync()
+#+END_SRC
+
+** What about Testing? 
+
+*** Console ~> State
+#+BEGIN_SRC scala
+case class InOut(in: List[String], out: Vector[String])
+object ConsoleState extends (Console ~> State[InOut, ?]) {
+  def apply[A](c: Console[A]): State[InOut, A] =
+    c match {
+      case ReadLine => State {
+        case InOut(in, out) => InOut(in.tail, out) -> in.head
+      }
+      case WriteLine(s) => State.modify {
+        case InOut(in, out) => InOut(in, out :+ s)
+      }
+    }
+}
+#+END_SRC
+
+*** Console ~> State
+#+BEGIN_SRC scala
+class ConsoleTest extends FlatSpec with Matchers {
+  "Console" should "read and write" in {
+    val in = List("Jax.Ex")
+    val out = Vector.empty[String]
+    val expected = Vector(
+      "Please enter your name:",
+      "Hello, Jax.Ex!"
+    )
+
+    val (io, _) = ConsoleApp.app.foldMap(ConsoleState).run(InOut(in, out)).value
+    io.out should equal(expected)
+  }
+}
+#+END_SRC
+
+* Combining Algebras
+
+#+REVEAL: split
+Bear with me. This is where it gets /really/ cool.
+
+** Combining Algebras
+- Introduce a new algebra
+#+BEGIN_SRC scala
+sealed trait Logo[A]
+case class Up(p: Position, distance: Int) extends Logo[Position]
+case class Down(p: Position, distance: Int) extends Logo[Position]
+case class Left(p: Position, distance: Int) extends Logo[Position]
+case class Right(p: Position, distance: Int) extends Logo[Position]
+#+END_SRC
+** Coproduct/EitherK
+#+BEGIN_SRC scala
+// Typically seen as Coproduct[F, G, A] in the literature
+class EitherK[F, G, A]
+
+type ConsoleLogo[A] = EitherK[Console, Logo, A]
+#+END_SRC
+
+** Injection
+Lift the algebra to the ~Free~ context
+#+BEGIN_SRC scala
+class LogoInject[F[_]](implicit I: InjectK[Logo, F]) {
+  def up(p: Position, distance: Int): Free[F, Position] = Free.inject[Logo, F](Up(p, distance))
+  def down(p: Position, distance: Int): Free[F, Position] = Free.inject[Logo, F](Down(p, distance))
+  def left(p: Position, distance: Int): Free[F, Position] = Free.inject[Logo, F](Left(p, distance))
+  def right(p: Position, distance: Int): Free[F, Position] = Free.inject[Logo, F](Right(p, distance))
+}
+#+END_SRC
+
+** Create the combined program
+#+BEGIN_SRC scala
+def program(implicit C: ConsoleInject[ConsoleLogo], L: LogoInject[ConsoleLogo]): Free[ConsoleLogo, Unit] = {
+  import C._, L._
+
+  val p0 = Position(30, 30)
+  for {
+    _  <- writeLine(s"Starting at: $p0")
+    p1 <- up(p0, 10)
+    _  <- writeLine(s"Position: $p1")
+    p2 <- down(p1, 15)
+    _  <- writeLine(s"Position: $p2")
+    p3 <- left(p2, 34)
+    _  <- writeLine(s"Position: $p3")
+    p4 <- right(p3, 18)
+    _  <- writeLine(s"Position: $p4")
+  } yield ()
+}
+#+END_SRC
+
+** Generate the Interpreter
+#+BEGIN_SRC scala
+def main(args: Array[String]) = {
+  val interpreter = ConsoleIO or LogoIO
+  program.foldMap(interpreter).unsafeRunSync
+}
+#+END_SRC
+
+* Ugh
+
+** So much boilerplate! 
+- Yeah, that's true... 
+- It's a lot less than having to write the same code over and over again! 
+- And it's a simple pattern that gets repeated over and over
+
+#+REVEAL: split
+So, if it's the same pattern, it can be abstracted, right? 
+#+ATTR_REVEAL: :frag t
+AMcros!
+
+** frees
+http://frees.io
+
+* Benefits
+- Clean separation of algebras
+- Easily combine algebras
+- Stack-safe (Trampolining)
+
+* Drawbacks
+- ~Monad~
+- Performance
+
+* ?

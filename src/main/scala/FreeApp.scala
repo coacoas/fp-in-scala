@@ -1,9 +1,18 @@
+import cats.effect.IO
 import cats.data.EitherK
 import cats.free.Free
 
 object FreeApp {
+
+  def f(i: Int): IO[Int] = ???
+
   type ConsoleLogo[A] = EitherK[Console, Logo, A]
-  def program(implicit C: ConsoleInject[ConsoleLogo], L: LogoInject[ConsoleLogo]): Free[ConsoleLogo, Unit] = {
+  type DBLogging[A] = EitherK[Database, Logging, A]
+  type App = EitherK[ConsoleLogo, DBLogging, A]
+  def program(implicit
+    C: ConsoleInject[ConsoleLogo],
+    L: LogoInject[ConsoleLogo]
+  ): Free[ConsoleLogo, Unit] = {
     import C._, L._
 
     val p0 = Position(30, 30)
@@ -20,13 +29,8 @@ object FreeApp {
     } yield ()
   }
 
+
   def main(args: Array[String]): Unit = {
-    val interpreter = ConsoleIO
-
-    ConsoleApp.program.foldMap(interpreter).unsafeRunSync()
-  }
-
-  def main2(args: Array[String]): Unit = {
     val interpreter = ConsoleIO or LogoIO
     program.foldMap(interpreter).unsafeRunSync()
   }

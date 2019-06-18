@@ -10,7 +10,7 @@
 
 * Inspiration
 
-Or, let's face it... blatant copying
+Or, let's face it... copying
 
 [[https://www.youtube.com/watch?v=aAtPi23nLcw][Runar Bjarnasson - Introduction to Functional Programming]]
 
